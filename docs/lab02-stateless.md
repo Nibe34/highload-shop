@@ -18,7 +18,7 @@
 Перевірка, що прихованого стану не лишилось:
 
 ```bash
-grep -rnE "static .*(Map|List|Set)|new (ConcurrentHashMap|HashMap|AtomicLong)|synchronized" src/main/java
+grep -rnE "static (final )?(Map|List|Set)<|new (ConcurrentHashMap|AtomicLong|AtomicInteger)|synchronized|private (final )?(Map|List|Set)<" src/main/java
 # → порожньо
 ```
 
