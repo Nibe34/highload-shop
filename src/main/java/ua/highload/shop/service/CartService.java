@@ -1,40 +1,54 @@
 package ua.highload.shop.service;
 
+import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-/** Кошик зберігається в пам'яті процесу (MVP). */
+/**
+ * Кошик — Redis hash {@code cart:<userId>} (productId → quantity).
+ * Зміни атомарні на боці Redis (HINCRBY/HDEL), тож паралельні запити через різні інстанси не втрачають оновлень.
+ */
 @Service
 public class CartService {
 
-    private final Map<Long, Map<Long, Integer>> carts = new ConcurrentHashMap<>();
-    private final ProductService products;
+    private static final String PREFIX = "cart:";
 
-    public CartService(ProductService products) {
+    private final StringRedisTemplate redis;
+    private final ProductService products;
+    private final Duration ttl;
+
+    public CartService(StringRedisTemplate redis, ProductService products,
+                       @Value("${shop.cart-ttl:7d}") Duration ttl) {
+        this.redis = redis;
         this.products = products;
+        this.ttl = ttl;
     }
 
     public Map<Long, Integer> get(long userId) {
-        return Map.copyOf(carts.getOrDefault(userId, Map.of()));
+        var result = new TreeMap<Long, Integer>();
+        redis.<String, String>opsForHash().entries(PREFIX + userId)
+                .forEach((k, v) -> result.put(Long.parseLong(k), Integer.parseInt(v)));
+        return result;
     }
 
     public Map<Long, Integer> add(long userId, long productId, int quantity) {
         products.get(productId);
-        carts.computeIfAbsent(userId, k -> new ConcurrentHashMap<>()).merge(productId, quantity, Integer::sum);
+        String key = PREFIX + userId;
+        redis.opsForHash().increment(key, Long.toString(productId), quantity);
+        redis.expire(key, ttl);
         return get(userId);
     }
 
     public Map<Long, Integer> remove(long userId, long productId) {
-        carts.computeIfPresent(userId, (k, cart) -> {
-            cart.remove(productId);
-            return cart;
-        });
+        redis.opsForHash().delete(PREFIX + userId, Long.toString(productId));
         return get(userId);
     }
 
     public void clear(long userId) {
-        carts.remove(userId);
+        redis.delete(PREFIX + userId);
     }
 }

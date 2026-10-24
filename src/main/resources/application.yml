@@ -15,6 +15,12 @@ spring:
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:10}
       connection-timeout: 3000
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 500ms
+      connect-timeout: 500ms
   flyway:
     enabled: true
   jackson:
@@ -22,6 +28,8 @@ spring:
 
 shop:
   instance-id: ${INSTANCE_ID:${HOSTNAME:local}}
+  session-ttl: 30m
+  cart-ttl: 7d
 
 management:
   endpoints:

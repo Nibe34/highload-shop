@@ -1,5 +1,21 @@
 name: shop
 
+x-app: &app
+  build: .
+  image: localhost/shop-app:latest
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  networks: [backend]
+
+x-app-env: &app-env
+  DB_URL: jdbc:postgresql://postgres:5432/shop
+  DB_USER: shop
+  DB_PASSWORD: shop
+  REDIS_HOST: redis
+
 services:
   postgres:
     image: docker.io/library/postgres:17
@@ -18,23 +34,40 @@ services:
       retries: 30
     networks: [backend]
 
-  app:
-    build: .
-    image: localhost/shop-app:latest
+  # Спільне сховище стану: сесії, кошики, лічильники. AOF — щоб стан переживав рестарт Redis.
+  redis:
+    image: docker.io/library/redis:7.4
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks: [backend]
+
+  app-1:
+    <<: *app
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/shop
-      DB_USER: shop
-      DB_PASSWORD: shop
+      <<: *app-env
       INSTANCE_ID: app-1
     ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks: [backend]
+      - "8081:8080"
+
+  app-2:
+    <<: *app
+    environment:
+      <<: *app-env
+      INSTANCE_ID: app-2
+    ports:
+      - "8082:8080"
 
 volumes:
   pgdata:
+  redisdata:
 
 networks:
   backend:

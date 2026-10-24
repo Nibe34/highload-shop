@@ -52,6 +52,6 @@ public final class Dtos {
     public record CheckoutRequest(@Valid @Size(max = 50) List<CartItemRequest> items) {
     }
 
-    public record SummaryResponse(long ordersCreatedSinceStart, String instance) {
+    public record SummaryResponse(long ordersCreatedTotal, String instance) {
     }
 }

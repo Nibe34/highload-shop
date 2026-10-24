@@ -1,0 +1,31 @@
+### 1. CRUD товару через різні інстанси
+POST   localhost:8081/api/products                   -> app-1 201
+       {"id":10002,"categoryId":1,"name":"Cross v1","description":"","priceCents":1000,"stock":5,"createdAt":"2026-10-24T21:58:05.180301Z","updatedAt":"2026-10-24T21:5
+GET    localhost:8082/api/products/10002             -> app-2 200
+       {"id":10002,"categoryId":1,"name":"Cross v1","description":"","priceCents":1000,"stock":5,"createdAt":"2026-10-24T21:58:05.180301Z","updatedAt":"2026-10-24T21:5
+PUT    localhost:8082/api/products/10002             -> app-2 200
+       {"id":10002,"categoryId":1,"name":"Cross v2","description":"","priceCents":1500,"stock":5,"createdAt":"2026-10-24T21:58:05.180301Z","updatedAt":"2026-10-24T21:5
+GET    localhost:8081/api/products/10002             -> app-1 200
+       {"id":10002,"categoryId":1,"name":"Cross v2","description":"","priceCents":1500,"stock":5,"createdAt":"2026-10-24T21:58:05.180301Z","updatedAt":"2026-10-24T21:5
+
+### 2. Сесія та кошик: логін на app-1, кошик на app-2, checkout на app-1
+POST   localhost:8081/api/users                      -> app-1 201
+       {"id":2003,"email":"cross1792879085300169677@shop.test","fullName":"Cross","region":"Kyiv","createdAt":"2026-10-24T21:58:05.321494Z"}
+POST   localhost:8081/api/auth/login                 -> app-1 200
+       {"token":"d8744b4e-07f9-4e61-b236-ca3e8b4e7d10","userId":2003}
+POST   localhost:8082/api/cart/items                 -> app-2 200
+       {"userId":2003,"items":[{"productId":10002,"quantity":2}]}
+POST   localhost:8081/api/cart/items                 -> app-1 200
+       {"userId":2003,"items":[{"productId":2,"quantity":1},{"productId":10002,"quantity":2}]}
+GET    localhost:8082/api/cart                       -> app-2 200
+       {"userId":2003,"items":[{"productId":2,"quantity":1},{"productId":10002,"quantity":2}]}
+POST   localhost:8081/api/orders                     -> app-1 201
+       {"id":50003,"userId":2003,"status":"CREATED","totalCents":39311,"createdAt":"2026-10-24T21:58:05.816770Z","items":[{"productId":2,"quantity":1,"priceCents":3631
+GET    localhost:8082/api/orders/my                  -> app-2 200
+       [{"id":50003,"userId":2003,"status":"CREATED","totalCents":39311,"createdAt":"2026-10-24T21:58:05.816770Z","items":[{"productId":2,"quantity":1,"priceCents":363
+GET    localhost:8082/api/cart                       -> app-2 200
+       {"userId":2003,"items":[]}
+GET    localhost:8081/api/stats/summary              -> app-1 200
+       {"ordersCreatedTotal":1,"instance":"app-1"}
+GET    localhost:8082/api/stats/summary              -> app-2 200
+       {"ordersCreatedTotal":1,"instance":"app-2"}

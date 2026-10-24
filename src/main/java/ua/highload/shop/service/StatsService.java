@@ -1,8 +1,8 @@
 package ua.highload.shop.service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import ua.highload.shop.domain.TopProduct;
 import ua.highload.shop.repo.OrderRepository;
@@ -10,20 +10,24 @@ import ua.highload.shop.repo.OrderRepository;
 @Service
 public class StatsService {
 
-    /** Лічильник оформлених замовлень з моменту старту (MVP, локальний для процесу). */
-    private final AtomicLong ordersCreated = new AtomicLong();
-    private final OrderRepository orders;
+    /** Глобальний лічильник оформлених замовлень (Redis INCR — атомарний для всіх інстансів). */
+    private static final String ORDERS_CREATED = "stats:orders-created";
 
-    public StatsService(OrderRepository orders) {
+    private final OrderRepository orders;
+    private final StringRedisTemplate redis;
+
+    public StatsService(OrderRepository orders, StringRedisTemplate redis) {
         this.orders = orders;
+        this.redis = redis;
     }
 
     public void orderCreated() {
-        ordersCreated.incrementAndGet();
+        redis.opsForValue().increment(ORDERS_CREATED);
     }
 
     public long ordersCreated() {
-        return ordersCreated.get();
+        String value = redis.opsForValue().get(ORDERS_CREATED);
+        return value == null ? 0 : Long.parseLong(value);
     }
 
     public List<TopProduct> topProducts(int limit) {

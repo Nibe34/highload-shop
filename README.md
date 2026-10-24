@@ -1,7 +1,7 @@
 # Shop — високонавантажений інтернет-магазин
 
 Наскрізний проєкт з курсу «Інженерія високонавантажених систем» (ЛР 1–10).
-Стек: Java 21, Spring Boot 3.5, PostgreSQL 17, podman/docker compose.
+Стек: Java 21, Spring Boot 3.5, PostgreSQL 17, Redis 7.4, podman/docker compose.
 
 ## Швидкий старт
 
@@ -19,5 +19,6 @@ scripts/smoke.sh                  # демонстрація всіх основ
 | ЛР | Тема | Звіт |
 |---|---|---|
 | 1 | System Design, MVP | [docs/lab01-system-design.md](docs/lab01-system-design.md) |
+| 2 | Stateless Architecture | [docs/lab02-stateless.md](docs/lab02-stateless.md) |
 
 Стан коду після кожної ЛР позначено git-тегом `labN` (`git checkout lab1`).
