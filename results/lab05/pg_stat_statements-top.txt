@@ -1,0 +1,12 @@
+ total_s | pct  |  calls  | mean_ms |                                           query                                            
+---------+------+---------+---------+--------------------------------------------------------------------------------------------
+  6451.6 | 95.8 |   22829 | 282.603 | SELECT id, user_id, status, total_cents, created_at FROM orders WHERE user_id = $1 ORDER B
+    65.1 |  1.0 |  659145 |   0.099 | INSERT INTO order_items (order_id, product_id, quantity, price_cents) VALUES ($1, $2, $3, 
+    37.7 |  0.6 |  659145 |   0.057 | UPDATE products SET stock = stock - $1, updated_at = now() WHERE id = $2
+    34.5 |  0.5 | 1469228 |   0.023 | SELECT id, category_id, name, description, price_cents, stock, created_at, updated_at FROM
+    32.7 |  0.5 |  340646 |   0.096 | INSERT INTO orders (user_id, status, total_cents) VALUES ($1, $2, $3) RETURNING id, user_i
+    30.2 |  0.4 |  128430 |   0.235 | SELECT id, category_id, name, description, price_cents, stock, created_at, updated_at FROM
+    24.4 |  0.4 |  174067 |   0.140 | SELECT id, category_id, name, description, price_cents, stock, created_at, updated_at FROM
+    17.4 |  0.3 |  106283 |   0.164 | SELECT id, category_id, name, description, price_cents, stock, created_at, updated_at FROM
+(8 rows)
+

@@ -1,0 +1,74 @@
+# Baseline Environment Specification
+
+Дата: 2026-10-25T13:26:06+02:00
+Хост: 12th Gen Intel(R) Core(TM) i5-12500H, 16 потоків, RAM 15 GB, 7.2.8-200.fc44.x86_64
+Контейнери: podman version 5.8.7, podman-compose version 1.6.0
+Load generator: k6 v2.3.0 (commit/e088784614, go1.26.8, linux/amd64), прив'язаний до CPU 12-15 (taskset)
+
+| Контейнер | CPU limit | Memory limit | Образ |
+|---|---|---|---|
+| shop_app-1_1 | 1.0 | 768 MB | localhost/shop-app:latest |
+| shop_app-2_1 | 1.0 | 768 MB | localhost/shop-app:latest |
+| shop_app-3_1 | 1.0 | 768 MB | localhost/shop-app:latest |
+| shop_lb_1 | 1.0 | 128 MB | docker.io/library/nginx:1.27 |
+| shop_postgres_1 | 2.0 | 1024 MB | docker.io/library/postgres:17 |
+| shop_redis_1 | 1.0 | 256 MB | docker.io/library/redis:7.4 |
+
+JVM: openjdk version "21.0.12.1" 2026-08-18 LTS; JAVA_OPTS=-XX:MaxRAMPercentage=75 -XX:+UseG1GC
+Tomcat max threads: 200; HikariCP maximumPoolSize: 10 на інстанс (30 сумарно)
+PostgreSQL: postgres (PostgreSQL) 17.11 (Debian 17.11-1.pgdg13+2), max_connections=200, shared_buffers=256MB
+Redis: v=7.4.11, AOF everysec
+nginx: Round Robin, keepalive 64; backend instances: 3
+Дані: products=10002, users=2005, orders=103014, order_items=203240
+== Прогрів (180 с)
+2026/10/25 11:26:07 [notice] 50#50: signal process started
+nginx: upstream-round-robin.conf
+== Сценарій A
+   A-10: 7755.013488/s rps, db 0/s
+   A-25: 5662.987102/s rps, db 6/s
+   A-50: 5601.51122/s rps, db 10/s
+   A-100: 5181.078576/s rps, db 304/s
+   A-200: 5994.469262/s rps, db 14/s
+== Сценарій B
+   B-10: 2297.938866/s rps, db 26527/s
+   B-25: 1914.002516/s rps, db 22751/s
+   B-50: 1902.846611/s rps, db 21941/s
+   B-100: 1871.276296/s rps, db 21560/s
+   B-200: 1855.828846/s rps, db 21427/s
+== Сценарій C
+   C-10: 292.793887/s rps, db 1043/s
+   C-25: 243.72354/s rps, db 835/s
+   C-50: 285.89873/s rps, db 1033/s
+   C-100: 304.690318/s rps, db 1100/s
+   C-200: 329.157782/s rps, db 1161/s
+== Ramp C
+   ramp-C: 218.190371/s rps, db 850/s
+== Scaling Impact: 1 інстанс
+2026/10/25 11:42:01 [notice] 135#135: signal process started
+nginx: upstream-scale-1.conf
+   scale1-A-50: 3053.976844/s rps, db 6/s
+   scale1-A-100: 3016.158503/s rps, db 6/s
+   scale1-A-200: 2652.357984/s rps, db 0/s
+   scale1-C-50: 275.609292/s rps, db 967/s
+   scale1-C-100: 263.781704/s rps, db 920/s
+   scale1-C-200: 287.233638/s rps, db 978/s
+2026/10/25 11:45:39 [notice] 180#180: signal process started
+nginx: upstream-round-robin.conf
+== Caching Impact: Cache Disabled
+   nocache-A-10: 5099.21868/s rps, db 5102/s
+   nocache-A-25: 5956.437135/s rps, db 5958/s
+   nocache-A-50: 6225.193543/s rps, db 6235/s
+   nocache-A-100: 5960.684127/s rps, db 5970/s
+   nocache-A-200: 5502.4188/s rps, db 5519/s
+== Cache Enabled, Cold → Warm
+   cold-A-100: 2419.03305/s rps, db 713/s
+   warm-A-100: 3133.497854/s rps, db 217/s
+== Coordinated Omission: 1 інстанс, closed (200 VUs) vs open (arrival rate)
+2026/10/25 11:55:09 [notice] 58#58: signal process started
+nginx: upstream-scale-1.conf
+   co-closed: 2610.527/s rps, db 7/s
+   open model rate=3132/s (120 % від closed-model throughput)
+   co-open: 3052.500721/s rps, db 0/s
+2026/10/25 11:56:34 [notice] 87#87: signal process started
+nginx: upstream-round-robin.conf
+done
