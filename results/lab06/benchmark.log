@@ -1,0 +1,17 @@
+== Топологія single (REPLICA_ENABLED=false, CACHE_ENABLED=false)
+   single-A-50: 4728.857671/s rps, db 4577/s
+   single-A-100: 5664.258905/s rps, db 5489/s
+   single-A-200: 4312.442605/s rps, db 4329/s
+   single-C-50: 1331.863219/s rps, db 5756/s
+   single-C-100: 1123.223434/s rps, db 4753/s
+   single-C-200: 1212.764056/s rps, db 5178/s
+== Топологія replica (REPLICA_ENABLED=true, CACHE_ENABLED=false)
+   replica-A-50: 5601.469804/s rps, db 0/s
+   replica-A-100: 5528.870264/s rps, db 0/s
+   replica-A-200: 5805.346651/s rps, db 0/s
+   replica-C-50: 1308.662818/s rps, db 2046/s
+   replica-C-100: 1408.557429/s rps, db 2213/s
+   replica-C-200: 1195.124809/s rps, db 2011/s
+== Повернення до штатної конфігурації (replica + cache)
+done
+exit=0

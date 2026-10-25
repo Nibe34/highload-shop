@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping("/users/me")
     public User me(@RequestHeader(value = "Authorization", required = false) String authorization) {
-        return users.get(auth.requireUser(authorization));
+        return users.own(auth.requireUser(authorization));
     }
 
     @GetMapping("/users/{id}")

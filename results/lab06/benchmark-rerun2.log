@@ -1,0 +1,7 @@
+== Топологія replica (REPLICA_ENABLED=true, CACHE_ENABLED=false)
+   replica-C-50: 1417.725546/s rps, db 5480/s
+   replica-C-100: 1683.231269/s rps, db 6452/s
+   replica-C-200: 1069.5887/s rps, db 3933/s
+== Повернення до штатної конфігурації (replica + cache)
+done
+exit=0

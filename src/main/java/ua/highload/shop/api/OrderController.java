@@ -95,8 +95,9 @@ public class OrderController {
 
     @GetMapping("/orders/my")
     public List<Order> my(@RequestHeader(value = AUTH, required = false) String authorization,
-                          @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit) {
-        return orders.byUser(auth.requireUser(authorization), limit);
+                          @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit,
+                          @RequestParam(defaultValue = "RYW") OrderService.ReadConsistency consistency) {
+        return orders.byUser(auth.requireUser(authorization), limit, consistency);
     }
 
     private static CartResponse toResponse(long userId, Map<Long, Integer> cart) {

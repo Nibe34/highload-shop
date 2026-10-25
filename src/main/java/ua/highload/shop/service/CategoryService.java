@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ua.highload.shop.cache.CacheClient;
 import ua.highload.shop.cache.CacheKeys;
 import ua.highload.shop.cache.Cached;
+import ua.highload.shop.db.DbRouting;
 import ua.highload.shop.domain.Category;
 import ua.highload.shop.repo.CategoryRepository;
 
@@ -29,6 +30,6 @@ public class CategoryService {
     }
 
     public Cached<List<Category>> all() {
-        return cache.getOrLoad(CacheKeys.categories(), categoryList, TTL, categories::findAll);
+        return cache.getOrLoad(CacheKeys.categories(), categoryList, TTL, () -> DbRouting.replica(categories::findAll));
     }
 }

@@ -23,7 +23,9 @@ server {
         proxy_read_timeout 15s;
         # Passive health check: при помилці з'єднання / 502-504 запит іде на наступний вузол.
         # POST після відправки на upstream не повторюється (non_idempotent вимкнено) — захист від дублів замовлень.
-        proxy_next_upstream error timeout http_502 http_503 http_504;
+        # 503 сюди НЕ входить: це контрольована відмова перевантаженого, але живого вузла (load shedding).
+        # Якщо рахувати 503 як failure, під піковим навантаженням nginx виводить з пулу ВСІ вузли → каскадна відмова.
+        proxy_next_upstream error timeout http_502 http_504;
         proxy_next_upstream_tries 3;
         proxy_next_upstream_timeout 5s;
     }

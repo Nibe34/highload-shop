@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.highload.shop.db.ReplicaHealth;
 
 /**
  * Readiness-перевірка для балансувальника: 200 — інстанс може обслуговувати трафік,
@@ -24,11 +25,16 @@ public class HealthController {
     private final JdbcTemplate jdbc;
     private final StringRedisTemplate redis;
     private final String instanceId;
+    private final ReplicaHealth replica;
+    private final boolean replicaEnabled;
 
-    public HealthController(JdbcTemplate jdbc, StringRedisTemplate redis, @Value("${shop.instance-id}") String instanceId) {
+    public HealthController(JdbcTemplate jdbc, StringRedisTemplate redis, @Value("${shop.instance-id}") String instanceId,
+                            ReplicaHealth replica, @Value("${shop.replica.enabled:false}") boolean replicaEnabled) {
         this.jdbc = jdbc;
         this.redis = redis;
         this.instanceId = instanceId;
+        this.replica = replica;
+        this.replicaEnabled = replicaEnabled;
     }
 
     @GetMapping("/health")
@@ -36,9 +42,15 @@ public class HealthController {
         var checks = new LinkedHashMap<String, Object>();
         boolean dbUp = check(checks, "database", () -> jdbc.queryForObject("SELECT 1", Integer.class));
         boolean redisUp = check(checks, "redis", () -> redis.execute((RedisCallback<String>) RedisConnection::ping));
+        if (replicaEnabled) {
+            // Replica некритична: при її відмові читання йдуть на Primary (Primary Fallback).
+            checks.put("replica", Map.of("status", replica.up() ? "UP" : "DOWN", "lagSeconds", replica.lagSeconds(),
+                    "usable", replica.usable()));
+        }
         boolean up = dbUp;
         var body = new LinkedHashMap<String, Object>();
-        body.put("status", !dbUp ? "DOWN" : redisUp ? "UP" : "DEGRADED");
+        boolean degraded = !redisUp || (replicaEnabled && !replica.usable());
+        body.put("status", !dbUp ? "DOWN" : degraded ? "DEGRADED" : "UP");
         body.put("instance", instanceId);
         body.put("checks", checks);
         return ResponseEntity.status(up ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE).body(body);

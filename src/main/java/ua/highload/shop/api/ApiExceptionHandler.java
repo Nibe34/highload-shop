@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -54,6 +55,37 @@ public class ApiExceptionHandler {
     ProblemDetail redisDown(RuntimeException e) {
         log.warn("Session store unavailable: {}", e.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, "Session store temporarily unavailable");
+    }
+
+    /** Primary недоступний: запис неможливий (Read-Only Mode), читання з Replica продовжують працювати. */
+    @ExceptionHandler({org.springframework.jdbc.CannotGetJdbcConnectionException.class,
+            org.springframework.transaction.CannotCreateTransactionException.class})
+    ResponseEntity<ProblemDetail> databaseDown(RuntimeException e) {
+        if (isPoolTimeout(e)) {
+            // Вузол живий, але пул з'єднань вичерпано: швидка відмова (load shedding) замість черги без кінця.
+            var pd = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Database is overloaded, retry later");
+            pd.setProperty("reason", "connection-pool-exhausted");
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).header("Retry-After", "1").body(pd);
+        }
+        log.warn("Database unavailable: {}", e.getMessage());
+        var pd = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE,
+                "Primary database unavailable: service is in read-only mode");
+        pd.setProperty("mode", "read-only");
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(pd);
+    }
+
+    /**
+     * HikariCP: "Connection is not available, request timed out" без вкладеної причини — пул вичерпано, БД доступна.
+     * Якщо БД недоступна, Hikari додає причину (останню помилку створення з'єднання, напр. connection refused).
+     */
+    private static boolean isPoolTimeout(Throwable e) {
+        for (Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof java.sql.SQLTransientConnectionException) {
+                return t.getCause() == null;
+            }
+        }
+        return false;
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

@@ -31,6 +31,12 @@ shop:
   session-ttl: 30m
   cart-ttl: 7d
   artificial-delay-ms: ${ARTIFICIAL_DELAY_MS:0}
+  replica:
+    enabled: ${REPLICA_ENABLED:false}
+    url: ${REPLICA_DB_URL:}
+    pool-size: ${REPLICA_POOL_SIZE:10}
+    max-lag: 10s
+    fence-ttl: ${FENCE_TTL:5s}
   cache:
     enabled: ${CACHE_ENABLED:true}
     breaker-open: 5s

@@ -23,6 +23,20 @@ public final class CacheKeys {
                 + ":ver" + version + ":p" + page + ":s" + size;
     }
 
+    /** Fence після зміни товару (stock/ціна): поки діє — картку перечитуємо з Primary. */
+    public static String productFence(long id) {
+        return "shop:fence:product:" + id;
+    }
+
+    public static String catalogFence(Long categoryId) {
+        return "shop:fence:catalog:" + (categoryId == null ? "all" : categoryId);
+    }
+
+    /** Fence read-your-own-writes: користувач щойно щось записав. */
+    public static String userWriteFence(long userId) {
+        return "shop:fence:user:" + userId;
+    }
+
     public static String categories() {
         return "shop:categories:v1";
     }

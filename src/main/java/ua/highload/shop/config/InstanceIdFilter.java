@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ua.highload.shop.db.DbRouting;
 
 /** Додає до кожної відповіді заголовок X-Instance-ID, щоб бачити, який інстанс обробив запит. */
 @Component
@@ -27,6 +28,7 @@ public class InstanceIdFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         response.setHeader("X-Instance-ID", instanceId);
+        DbRouting.clearUsed();
         chain.doFilter(request, response);
     }
 }

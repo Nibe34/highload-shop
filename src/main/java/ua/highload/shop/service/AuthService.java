@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import ua.highload.shop.db.DbRouting;
 import ua.highload.shop.domain.UnauthorizedException;
 import ua.highload.shop.repo.UserRepository;
 
@@ -32,7 +33,8 @@ public class AuthService {
     }
 
     public Session login(String email, String password) {
-        var creds = users.findCredentials(email.toLowerCase())
+        // Автентифікація — Strictly Consistent: щойно зареєстрований користувач має одразу увійти.
+        var creds = DbRouting.primary(() -> users.findCredentials(email.toLowerCase()))
                 .filter(c -> hasher.matches(password, c.passwordHash()))
                 .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
         String token = UUID.randomUUID().toString();

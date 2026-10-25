@@ -19,6 +19,8 @@ x-app-env: &app-env
   DB_USER: shop
   DB_PASSWORD: shop
   REDIS_HOST: redis
+  REPLICA_ENABLED: ${REPLICA_ENABLED:-true}
+  REPLICA_DB_URL: jdbc:postgresql://postgres-replica:5432/shop
 
 services:
   postgres:
@@ -29,10 +31,14 @@ services:
       POSTGRES_DB: shop
       POSTGRES_USER: shop
       POSTGRES_PASSWORD: shop
+    # Primary: WAL streaming для реплік, власний pg_hba.conf з дозволом replication-з'єднань
     command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=256MB",
-              "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.track=all"]
+              "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.track=all",
+              "-c", "wal_level=replica", "-c", "max_wal_senders=10", "-c", "max_replication_slots=10",
+              "-c", "hba_file=/etc/postgresql/pg_hba.conf"]
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro,z
     ports:
       - "127.0.0.1:5432:5432"
     healthcheck:
@@ -40,6 +46,35 @@ services:
       interval: 2s
       timeout: 3s
       retries: 30
+    networks: [backend]
+
+  # Read-Replica: pg_basebackup з Primary при першому старті, далі асинхронна потокова реплікація (hot standby)
+  postgres-replica:
+    image: docker.io/library/postgres:17
+    cpus: 2.0
+    mem_limit: 1g
+    entrypoint: ["/replica-entrypoint.sh"]
+    command: ["-c", "max_connections=200", "-c", "shared_buffers=256MB", "-c", "hot_standby=on",
+              "-c", "hot_standby_feedback=on",
+              "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.track=all"]
+    environment:
+      PRIMARY_HOST: postgres
+      REPLICATION_USER: replicator
+      REPLICATION_PASSWORD: replicator
+      REPLICA_SLOT: replica_1
+    volumes:
+      - pgreplica:/var/lib/postgresql/data
+      - ./db/replica-entrypoint.sh:/replica-entrypoint.sh:ro,z
+    ports:
+      - "127.0.0.1:5433:5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop -d shop"]
+      interval: 2s
+      timeout: 3s
+      retries: 60
     networks: [backend]
 
   # Спільне сховище стану: сесії, кошики, лічильники. AOF — щоб стан переживав рестарт Redis.
@@ -113,6 +148,7 @@ services:
 
 volumes:
   pgdata:
+  pgreplica:
   redisdata:
 
 networks:

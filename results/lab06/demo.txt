@@ -1,0 +1,37 @@
+### 1. Реплікація: запис через API → Primary, перевірка наявності на Replica
+primary: 10007|Replicated product
+replica: 10007|Replicated product
+replica pg_is_in_recovery: t
+запис на replica: ERROR:  cannot execute UPDATE in a read-only transaction
+pg_stat_replication на primary:
+ application_name |   state   | sync_state |  sent_lsn  | replay_lsn |   replay_lag    
+------------------+-----------+------------+------------+------------+-----------------
+ walreceiver      | streaming | async      | 0/327FBB40 | 0/327FBB40 | 00:00:00.001303
+(1 row)
+
+
+### 2. Stale Read: штучний лаг recovery_min_apply_delay=3s на Replica
+замовлень до запису (primary): 0
+POST /api/orders → 201, X-DB-Node=primary
+  GET /orders/my consistency=EVENTUAL → 0 замовлень, X-DB-Node=replica
+  GET /orders/my consistency=RYW      → 1 замовлень, X-DB-Node=primary
+  (очікується: EVENTUAL = 0 — Stale Read; RYW = 1 з Primary завдяки write-fence)
+  через 6 с (fence вигас, replica наздогнала): RYW → 1 замовлень, X-DB-Node=replica
+
+### 3. Втрата Replica: podman stop shop_postgres-replica_1
+  GET /orders/my (EVENTUAL) → 200, X-DB-Node=primary-fallback
+  GET /users/5 → 200, X-DB-Node=primary-fallback
+  POST /orders → 201
+  /health → 200 {"status":"DEGRADED","instance":"app-1","checks":{"database":{"status":"UP","latencyMs":0.473114},"redis":{"status":"UP","latencyMs":21.923677},"replica":{"status":"DOWN","lagSeconds":0.0,"usable":fal
+  replica повернулась у ротацію на всіх інстансах через 11 с після старту контейнера
+  GET /users/5 → X-Instance-ID=app-2 X-DB-Node=replica
+  GET /users/5 → X-Instance-ID=app-3 X-DB-Node=replica
+  GET /users/5 → X-Instance-ID=app-1 X-DB-Node=replica
+
+### 4. Втрата Primary: podman stop shop_postgres_1
+  POST /orders → 503 {"type":"about:blank","title":"Service Unavailable","status":503,"detail":"Primary database unavailable: service is in read-only mode","instance":"/api/orders",
+  GET /orders/my (EVENTUAL) → 200, X-DB-Node=replica
+  GET /users/5 → 200, X-DB-Node=replica
+  GET /products/123 → 200, X-Cache=HIT
+  GET /orders/1 (strict, primary) → 503
+  primary повернувся: POST /orders → 201 (через 0 с після старту контейнера)

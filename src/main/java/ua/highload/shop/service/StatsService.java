@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import ua.highload.shop.cache.CacheClient;
 import ua.highload.shop.cache.CacheKeys;
 import ua.highload.shop.cache.Cached;
+import ua.highload.shop.db.DbRouting;
 import ua.highload.shop.domain.TopProduct;
 import ua.highload.shop.repo.OrderRepository;
 
@@ -52,6 +53,6 @@ public class StatsService {
 
     /** Аналітика допускає застарівання до TTL (30 с), тому явна інвалідація при нових замовленнях не робиться. */
     public Cached<List<TopProduct>> topProducts(int limit) {
-        return cache.getOrLoad(CacheKeys.topProducts(limit), topList, topTtl, () -> orders.topProducts(limit));
+        return cache.getOrLoad(CacheKeys.topProducts(limit), topList, topTtl, () -> DbRouting.replica(() -> orders.topProducts(limit)));
     }
 }

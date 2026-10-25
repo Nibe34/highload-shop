@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import ua.highload.shop.cache.CacheClient;
+import ua.highload.shop.cache.CacheKeys;
+import ua.highload.shop.db.DbNode;
+import ua.highload.shop.db.DbRouting;
 import ua.highload.shop.domain.ConflictException;
 import ua.highload.shop.domain.NotFoundException;
 import ua.highload.shop.domain.Order;
@@ -25,13 +29,29 @@ public class OrderService {
     private final ProductRepository products;
     private final StatsService stats;
     private final ProductService productService;
+    private final CacheClient cache;
+    private final java.time.Duration fenceTtl;
 
     public OrderService(OrderRepository orders, ProductRepository products, StatsService stats,
-                        ProductService productService) {
+                        ProductService productService, CacheClient cache,
+                        @org.springframework.beans.factory.annotation.Value("${shop.replica.fence-ttl:5s}")
+                        java.time.Duration fenceTtl) {
         this.orders = orders;
         this.products = products;
         this.stats = stats;
         this.productService = productService;
+        this.cache = cache;
+        this.fenceTtl = fenceTtl;
+    }
+
+    /** Режим читання історії замовлень. */
+    public enum ReadConsistency {
+        /** Read-Your-Own-Writes: Replica, але Primary протягом fence-ttl після власного запису. */
+        RYW,
+        /** Завжди Replica (може повернути застарілі дані) — для демонстрації Stale Read. */
+        EVENTUAL,
+        /** Завжди Primary. */
+        STRONG
     }
 
     /**
@@ -67,6 +87,7 @@ public class OrderService {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
+                cache.fence(CacheKeys.userWriteFence(userId), fenceTtl);
                 productService.evictProducts(quantities.keySet());
                 stats.orderCreated();
             }
@@ -74,14 +95,22 @@ public class OrderService {
         return order;
     }
 
+    /** Підтвердження замовлення — Explicit Primary Routing (Strictly Consistent Read). */
     public Order get(long id) {
-        Order order = orders.findById(id).orElseThrow(() -> new NotFoundException("Order " + id + " not found"));
-        return order.withItems(orders.findItems(id));
+        return DbRouting.primary(() -> {
+            Order order = orders.findById(id).orElseThrow(() -> new NotFoundException("Order " + id + " not found"));
+            return order.withItems(orders.findItems(id));
+        });
     }
 
-    public List<Order> byUser(long userId, int limit) {
-        return orders.findByUser(userId, limit).stream()
+    public List<Order> byUser(long userId, int limit, ReadConsistency consistency) {
+        DbNode node = switch (consistency) {
+            case STRONG -> DbNode.PRIMARY;
+            case EVENTUAL -> DbNode.REPLICA;
+            case RYW -> cache.fenced(CacheKeys.userWriteFence(userId)) ? DbNode.PRIMARY : DbNode.REPLICA;
+        };
+        return DbRouting.on(node, () -> orders.findByUser(userId, limit).stream()
                 .map(o -> o.withItems(orders.findItems(o.id())))
-                .toList();
+                .toList());
     }
 }

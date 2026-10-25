@@ -138,6 +138,34 @@ public class CacheClient {
         }
     }
 
+    /**
+     * «Write fence»: позначка, що дані нещодавно змінено на Primary і Replica може ще їх не мати.
+     * Поки позначка жива (TTL ≥ очікуваного лагу реплікації), читання маршрутизуються на Primary.
+     */
+    public void fence(String key, Duration ttl) {
+        try {
+            redis.opsForValue().set(key, "1", ttl);
+        } catch (DataAccessException e) {
+            trip(e);
+        }
+    }
+
+    /**
+     * Чи діє fence. Якщо Redis недоступний — вважаємо, що діє (безпечніше читати з Primary).
+     * Fence — механізм консистентності, а не кешування, тому від shop.cache.enabled не залежить.
+     */
+    public boolean fenced(String key) {
+        if (System.currentTimeMillis() < openUntil) {
+            return true;
+        }
+        try {
+            return Boolean.TRUE.equals(redis.hasKey(key));
+        } catch (DataAccessException e) {
+            trip(e);
+            return true;
+        }
+    }
+
     public boolean available() {
         return enabled && System.currentTimeMillis() >= openUntil;
     }
