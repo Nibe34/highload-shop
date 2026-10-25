@@ -1,14 +1,18 @@
 name: shop
 
+# Фіксована конфігурація ресурсів (однакова для всіх експериментів ЛР3–ЛР10).
 x-app: &app
   build: .
   image: localhost/shop-app:latest
+  cpus: 1.0
+  mem_limit: 768m
   depends_on:
     postgres:
       condition: service_healthy
     redis:
       condition: service_healthy
   networks: [backend]
+  # Порти інстансів назовні НЕ публікуються: доступ лише через балансувальник.
 
 x-app-env: &app-env
   DB_URL: jdbc:postgresql://postgres:5432/shop
@@ -19,14 +23,17 @@ x-app-env: &app-env
 services:
   postgres:
     image: docker.io/library/postgres:17
+    cpus: 2.0
+    mem_limit: 1g
     environment:
       POSTGRES_DB: shop
       POSTGRES_USER: shop
       POSTGRES_PASSWORD: shop
+    command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=256MB"]
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U shop -d shop"]
       interval: 2s
@@ -37,11 +44,13 @@ services:
   # Спільне сховище стану: сесії, кошики, лічильники. AOF — щоб стан переживав рестарт Redis.
   redis:
     image: docker.io/library/redis:7.4
+    cpus: 1.0
+    mem_limit: 256m
     command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
     volumes:
       - redisdata:/data
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 2s
@@ -54,16 +63,49 @@ services:
     environment:
       <<: *app-env
       INSTANCE_ID: app-1
-    ports:
-      - "8081:8080"
+      ARTIFICIAL_DELAY_MS: ${APP1_DELAY_MS:-0}
 
   app-2:
     <<: *app
     environment:
       <<: *app-env
       INSTANCE_ID: app-2
+      ARTIFICIAL_DELAY_MS: ${APP2_DELAY_MS:-0}
+
+  app-3:
+    <<: *app
+    environment:
+      <<: *app-env
+      INSTANCE_ID: app-3
+      ARTIFICIAL_DELAY_MS: ${APP3_DELAY_MS:-0}
+
+  # Єдина точка входу для клієнтів
+  lb:
+    image: docker.io/library/nginx:1.27
+    cpus: 1.0
+    mem_limit: 128m
+    environment:
+      LB_ALGO: ${LB_ALGO:-round-robin}
+      NGINX_ENTRYPOINT_LOCAL_RESOLVERS: "1"
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro,z
+      - ./nginx:/etc/nginx/shop:ro,z
     ports:
-      - "8082:8080"
+      - "8080:80"
+    depends_on: [app-1, app-2, app-3]
+    networks: [backend]
+
+  # Альтернативний LB з активними health check'ами: podman-compose --profile haproxy up -d haproxy
+  haproxy:
+    image: docker.io/library/haproxy:3.0
+    profiles: [haproxy]
+    cpus: 1.0
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro,z
+    ports:
+      - "8090:8081"
+      - "8404:8404"
+    networks: [backend]
 
 volumes:
   pgdata:

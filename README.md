@@ -10,7 +10,7 @@ podman-compose up -d --build      # або: docker compose up -d --build
 scripts/smoke.sh                  # демонстрація всіх основних endpoints
 ```
 
-* API: `http://localhost:8080/api/...`
+* API (через балансувальник nginx): `http://localhost:8080/api/...`
 * Swagger UI: `http://localhost:8080/swagger-ui.html`
 * Тестові користувачі: `user1@shop.test` … `user2000@shop.test`, пароль `password`.
 
@@ -20,5 +20,6 @@ scripts/smoke.sh                  # демонстрація всіх основ
 |---|---|---|
 | 1 | System Design, MVP | [docs/lab01-system-design.md](docs/lab01-system-design.md) |
 | 2 | Stateless Architecture | [docs/lab02-stateless.md](docs/lab02-stateless.md) |
+| 3 | Horizontal Scaling, Load Balancing | [docs/lab03-horizontal-scaling.md](docs/lab03-horizontal-scaling.md) |
 
 Стан коду після кожної ЛР позначено git-тегом `labN` (`git checkout lab1`).

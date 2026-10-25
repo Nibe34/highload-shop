@@ -1,0 +1,36 @@
+== 0. Прогрів усіх інстансів
+2026/10/25 10:44:47 [notice] 90#90: signal process started
+nginx: алгоритм → round-robin
+== 1. Розподіл для кожного алгоритму (20 VUs, 20 s)
+2026/10/25 10:45:47 [notice] 110#110: signal process started
+nginx: алгоритм → round-robin
+   algo-round-robin: 11449.451609/s rps
+2026/10/25 10:46:20 [notice] 134#134: signal process started
+nginx: алгоритм → least-conn
+   algo-least-conn: 15681.170051/s rps
+2026/10/25 10:46:53 [notice] 158#158: signal process started
+nginx: алгоритм → weighted
+   algo-weighted: 4185.563249/s rps
+2026/10/25 10:47:26 [notice] 182#182: signal process started
+nginx: алгоритм → ip-hash
+   algo-ip-hash: 4400.498774/s rps
+== 2. Асиметричне навантаження: app-3 +100 мс затримки
+2026/10/25 10:49:01 [notice] 50#50: signal process started
+nginx: алгоритм → round-robin
+   slow-round-robin: 1441.929982/s rps
+2026/10/25 10:49:44 [notice] 74#74: signal process started
+nginx: алгоритм → least-conn
+   slow-least-conn: 8204.093229/s rps
+== 3. Відмова вузла під навантаженням: kill app-2 на 10-й секунді (round-robin)
+2026/10/25 10:50:44 [notice] 50#50: signal process started
+nginx: алгоритм → round-robin
+   killed app-2 at 12:51:39
+   failover-kill: 1883.648935/s rps
+== 4. Scale-out: 1 / 2 / 3 інстанси
+   scale-1-read: 2752.692124/s rps
+   scale-1-mixed: 1058.838333/s rps
+   scale-2-read: 1352.944561/s rps
+   scale-2-mixed: 696.860525/s rps
+   scale-3-read: 2032.953479/s rps
+   scale-3-mixed: 984.864452/s rps
+done

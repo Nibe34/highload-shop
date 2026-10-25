@@ -30,6 +30,7 @@ shop:
   instance-id: ${INSTANCE_ID:${HOSTNAME:local}}
   session-ttl: 30m
   cart-ttl: 7d
+  artificial-delay-ms: ${ARTIFICIAL_DELAY_MS:0}
 
 management:
   endpoints:

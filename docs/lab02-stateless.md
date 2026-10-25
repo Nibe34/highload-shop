@@ -79,7 +79,7 @@ flowchart LR
 
 ### Cross-Instance Consistency — `scripts/lab2-cross-instance.sh`
 
-Повний вивід: [results/lab02/cross-instance.txt](results/lab02/cross-instance.txt).
+Повний вивід: [results/lab02/cross-instance.txt](../results/lab02/cross-instance.txt).
 
 | Крок | Інстанс | Результат |
 |---|---|---|
@@ -101,7 +101,7 @@ Sticky sessions не використовуються: клієнт свідом
 
 Сесію й кошик створено через app-1. Далі 40 checkout-запитів по черзі на app-1/app-2; на 20-му запиті `podman kill shop_app-1_1` (SIGKILL, без graceful shutdown). Якщо інстанс недоступний, клієнт повторює запит на іншому (у ЛР3 цю роль бере балансувальник).
 
-Результат ([results/lab02/instance-loss.txt](results/lab02/instance-loss.txt)):
+Результат ([results/lab02/instance-loss.txt](../results/lab02/instance-loss.txt)):
 
 ```
 >>> podman kill shop_app-1_1

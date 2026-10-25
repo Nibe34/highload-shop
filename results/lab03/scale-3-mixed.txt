@@ -1,0 +1,47 @@
+
+
+  █ THRESHOLDS 
+
+    responses_by_instance{instance:app-1}
+    ✓ 'count>=0' count=25306
+
+    responses_by_instance{instance:app-2}
+    ✓ 'count>=0' count=25306
+
+    responses_by_instance{instance:app-3}
+    ✓ 'count>=0' count=25306
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 75918   2518.432062/s
+    checks_succeeded...: 100.00% 75918 out of 75918
+    checks_failed......: 0.00%   0 out of 75918
+
+    ✓ list 200
+    ✓ order 201
+
+    CUSTOM
+    responses_by_instance..........: 75918  2518.432062/s
+      { instance:app-1 }...........: 25306  839.477354/s
+      { instance:app-2 }...........: 25306  839.477354/s
+      { instance:app-3 }...........: 25306  839.477354/s
+
+    HTTP
+    http_req_duration..............: avg=39.28ms med=4.88ms p(95)=190.31ms p(99)=302.02ms max=1.26s
+      { expected_response:true }...: avg=39.28ms med=4.88ms p(95)=190.31ms p(99)=302.02ms max=1.26s
+    http_req_failed................: 0.00%  0 out of 76118
+    http_reqs......................: 76118  2525.066674/s
+
+    EXECUTION
+    iteration_duration.............: avg=39.57ms med=5.1ms  p(95)=190.67ms p(99)=302.44ms max=1.26s
+    iterations.....................: 75918  2518.432062/s
+    vus............................: 100    min=100        max=100
+    vus_max........................: 100    min=100        max=100
+
+    NETWORK
+    data_received..................: 495 MB 16 MB/s
+    data_sent......................: 8.9 MB 295 kB/s
+
+
+
