@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Readiness-перевірка для балансувальника: 200 — інстанс може обслуговувати трафік,
- * 503 — критична залежність недоступна і вузол треба вивести з пулу.
+ * 503 — критична залежність (БД) недоступна і вузол треба вивести з пулу.
+ * Недоступний Redis — це DEGRADED (200): каталог працює напряму з БД, тому вузол лишається в пулі.
  */
 @RestController
 public class HealthController {
@@ -35,9 +36,9 @@ public class HealthController {
         var checks = new LinkedHashMap<String, Object>();
         boolean dbUp = check(checks, "database", () -> jdbc.queryForObject("SELECT 1", Integer.class));
         boolean redisUp = check(checks, "redis", () -> redis.execute((RedisCallback<String>) RedisConnection::ping));
-        boolean up = dbUp && redisUp;
+        boolean up = dbUp;
         var body = new LinkedHashMap<String, Object>();
-        body.put("status", up ? "UP" : "DOWN");
+        body.put("status", !dbUp ? "DOWN" : redisUp ? "UP" : "DEGRADED");
         body.put("instance", instanceId);
         body.put("checks", checks);
         return ResponseEntity.status(up ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE).body(body);

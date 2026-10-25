@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ua.highload.shop.api.Dtos.ProductRequest;
+import ua.highload.shop.cache.Cached;
 import ua.highload.shop.domain.Category;
 import ua.highload.shop.domain.Product;
 import ua.highload.shop.service.CategoryService;
@@ -35,20 +37,20 @@ public class ProductController {
     }
 
     @GetMapping("/categories")
-    public List<Category> categories() {
-        return categories.all();
+    public ResponseEntity<List<Category>> categories() {
+        return withCacheHeader(categories.all());
     }
 
     @GetMapping("/products")
-    public List<Product> list(@RequestParam(required = false) Long categoryId,
+    public ResponseEntity<List<Product>> list(@RequestParam(required = false) Long categoryId,
                               @RequestParam(defaultValue = "0") @Min(0) @Max(1000) int page,
                               @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
-        return products.list(categoryId, page, size);
+        return withCacheHeader(products.list(categoryId, page, size));
     }
 
     @GetMapping("/products/{id}")
-    public Product get(@PathVariable long id) {
-        return products.get(id);
+    public ResponseEntity<Product> get(@PathVariable long id) {
+        return withCacheHeader(products.getCached(id));
     }
 
     @PostMapping("/products")
@@ -66,6 +68,10 @@ public class ProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
         products.delete(id);
+    }
+
+    static <T> ResponseEntity<T> withCacheHeader(Cached<T> cached) {
+        return ResponseEntity.ok().header("X-Cache", cached.status().name()).body(cached.value());
     }
 
     private static String descriptionOf(ProductRequest req) {

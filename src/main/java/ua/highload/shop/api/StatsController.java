@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +27,8 @@ public class StatsController {
     }
 
     @GetMapping("/top-products")
-    public List<TopProduct> topProducts(@RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
-        return stats.topProducts(limit);
+    public ResponseEntity<List<TopProduct>> topProducts(@RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
+        return ProductController.withCacheHeader(stats.topProducts(limit));
     }
 
     @GetMapping("/summary")

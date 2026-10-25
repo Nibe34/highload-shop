@@ -21,5 +21,6 @@ scripts/smoke.sh                  # демонстрація всіх основ
 | 1 | System Design, MVP | [docs/lab01-system-design.md](docs/lab01-system-design.md) |
 | 2 | Stateless Architecture | [docs/lab02-stateless.md](docs/lab02-stateless.md) |
 | 3 | Horizontal Scaling, Load Balancing | [docs/lab03-horizontal-scaling.md](docs/lab03-horizontal-scaling.md) |
+| 4 | Distributed Caching | [docs/lab04-distributed-caching.md](docs/lab04-distributed-caching.md) |
 
 Стан коду після кожної ЛР позначено git-тегом `labN` (`git checkout lab1`).

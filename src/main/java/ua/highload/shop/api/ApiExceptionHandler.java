@@ -48,6 +48,14 @@ public class ApiExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    /** Redis (сесії/кошики) недоступний: контрольована 503 замість 500 — каталог при цьому продовжує працювати. */
+    @ExceptionHandler({org.springframework.data.redis.RedisConnectionFailureException.class,
+            org.springframework.data.redis.RedisSystemException.class})
+    ProblemDetail redisDown(RuntimeException e) {
+        log.warn("Session store unavailable: {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, "Session store temporarily unavailable");
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     ProblemDetail integrity(DataIntegrityViolationException e) {
         log.debug("Integrity violation", e);

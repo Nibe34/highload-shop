@@ -1,0 +1,33 @@
+### 1. MISS → HIT (картка товару 42, ключ shop:product:v1:42)
+200     X-Cache=MISS   app-1  t=5.6 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+200     X-Cache=HIT    app-2  t=2.0 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+200     X-Cache=HIT    app-3  t=2.6 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+TTL ключа: 300 с
+
+### 2. Інвалідація при PUT
+PUT -> 200
+200     X-Cache=MISS   app-3  t=2.7 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+200     X-Cache=HIT    app-1  t=1.9 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+
+### 3. Інвалідація сторінок каталогу через версію категорії
+200     X-Cache=MISS   app-2  t=14.6 ms  [{"id":2,"categoryId":3,"name":"Product 2","description":"Description of product 2. Lorem 
+200     X-Cache=HIT    app-3  t=33.5 ms  [{"id":2,"categoryId":3,"name":"Product 2","description":"Description of product 2. Lorem 
+PUT -> 200
+версія каталогу категорії 3: 4
+200     X-Cache=MISS   app-2  t=3.6 ms  [{"id":2,"categoryId":3,"name":"Product 2","description":"Description of product 2. Lorem 
+
+### 4. Cold vs Hot: top-products (агрегація ~150k рядків), 20 вимірювань кожного
+cold (MISS): median=28.96 ms  min=23.97  max=38.63
+hot  (HIT) : median=2.35 ms  min=1.66  max=10.56
+
+### 5. Fallback: podman stop shop_redis_1
+200     X-Cache=BYPASS app-1  t=4.4 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+200     X-Cache=BYPASS app-2  t=3.1 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+200     X-Cache=BYPASS app-3  t=5.2 ms  [{"id":2,"categoryId":3,"name":"Product 2","description":"Description of product 2. Lorem 
+200     X-Cache=BYPASS app-1  t=25.9 ms  [{"productId":1,"name":"Product 1","unitsSold":16144,"revenueCents":1199822080},{"productI
+200     X-Cache=       app-2  t=2.7 ms  {"status":"DEGRADED","instance":"app-2","checks":{"database":{"status":"UP","latencyMs":0.
+503     X-Cache=       app-3  t=29.0 ms  {"type":"about:blank","title":"Service Unavailable","status":503,"detail":"Session store t
+### podman start shop_redis_1 — очікуємо автоматичного перепідключення (Lettuce reconnect + breaker 5 с)
+кеш знову активний через 20 с
+200     X-Cache=BYPASS app-3  t=3.6 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore
+200     X-Cache=BYPASS app-1  t=4.1 ms  {"id":42,"categoryId":3,"name":"Product 42","description":"Description of product 42. Lore

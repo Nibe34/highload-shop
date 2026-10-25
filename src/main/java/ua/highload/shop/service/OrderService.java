@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import ua.highload.shop.domain.ConflictException;
 import ua.highload.shop.domain.NotFoundException;
 import ua.highload.shop.domain.Order;
@@ -22,11 +24,14 @@ public class OrderService {
     private final OrderRepository orders;
     private final ProductRepository products;
     private final StatsService stats;
+    private final ProductService productService;
 
-    public OrderService(OrderRepository orders, ProductRepository products, StatsService stats) {
+    public OrderService(OrderRepository orders, ProductRepository products, StatsService stats,
+                        ProductService productService) {
         this.orders = orders;
         this.products = products;
         this.stats = stats;
+        this.productService = productService;
     }
 
     /**
@@ -58,7 +63,14 @@ public class OrderService {
             total += p.priceCents() * qty;
         }
         Order order = orders.insert(userId, "CREATED", total, items);
-        stats.orderCreated();
+        // Інвалідація кешу карток товарів (змінився stock) — лише після успішного COMMIT.
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                productService.evictProducts(quantities.keySet());
+                stats.orderCreated();
+            }
+        });
         return order;
     }
 

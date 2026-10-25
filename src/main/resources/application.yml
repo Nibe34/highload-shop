@@ -31,6 +31,13 @@ shop:
   session-ttl: 30m
   cart-ttl: 7d
   artificial-delay-ms: ${ARTIFICIAL_DELAY_MS:0}
+  cache:
+    enabled: ${CACHE_ENABLED:true}
+    breaker-open: 5s
+    ttl:
+      product: 5m
+      catalog: 60s
+      top-products: 30s
 
 management:
   endpoints:
