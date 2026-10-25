@@ -22,7 +22,6 @@ import ua.highload.shop.api.Dtos.CartItem;
 import ua.highload.shop.api.Dtos.CartItemRequest;
 import ua.highload.shop.api.Dtos.CartResponse;
 import ua.highload.shop.api.Dtos.CheckoutRequest;
-import ua.highload.shop.domain.NotFoundException;
 import ua.highload.shop.domain.Order;
 import ua.highload.shop.service.AuthService;
 import ua.highload.shop.service.CartService;
@@ -85,19 +84,13 @@ public class OrderController {
 
     @GetMapping("/orders/{id}")
     public Order get(@RequestHeader(value = AUTH, required = false) String authorization, @PathVariable long id) {
-        long userId = auth.requireUser(authorization);
-        Order order = orders.get(id);
-        if (order.userId() != userId) {
-            throw new NotFoundException("Order " + id + " not found");
-        }
-        return order;
+        return orders.get(auth.requireUser(authorization), id);
     }
 
     @GetMapping("/orders/my")
     public List<Order> my(@RequestHeader(value = AUTH, required = false) String authorization,
-                          @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit,
-                          @RequestParam(defaultValue = "RYW") OrderService.ReadConsistency consistency) {
-        return orders.byUser(auth.requireUser(authorization), limit, consistency);
+                          @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit) {
+        return orders.byUser(auth.requireUser(authorization), limit);
     }
 
     private static CartResponse toResponse(long userId, Map<Long, Integer> cart) {

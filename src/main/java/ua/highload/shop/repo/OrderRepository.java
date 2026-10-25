@@ -3,6 +3,7 @@ package ua.highload.shop.repo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,25 +11,31 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ua.highload.shop.domain.Order;
 import ua.highload.shop.domain.OrderItem;
-import ua.highload.shop.domain.TopProduct;
+import ua.highload.shop.shard.Shard;
 
+/** Доступ до замовлень на конкретному шарді. Шард обирає {@link ua.highload.shop.shard.ShardRouter}. */
 @Repository
 public class OrderRepository {
 
-    private final NamedParameterJdbcTemplate jdbc;
+    private static final String COLUMNS = "id, user_id, status, total_cents, created_at";
 
-    public OrderRepository(NamedParameterJdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+    public Order insert(Shard shard, long userId, String status, long totalCents, List<OrderItem> items) {
+        return insert(shard.jdbc(), null, userId, status, totalCents, null, items);
     }
 
-    public Order insert(long userId, String status, long totalCents, List<OrderItem> items) {
-        var order = jdbc.queryForObject("""
-                INSERT INTO orders (user_id, status, total_cents) VALUES (:userId, :status, :total)
-                RETURNING id, user_id, status, total_cents, created_at
-                """, new MapSqlParameterSource()
+    /** Вставка з явним id/created_at — для перенесення замовлень між шардами (resharding). */
+    public Order insert(NamedParameterJdbcTemplate jdbc, Long id, long userId, String status, long totalCents,
+                        java.time.Instant createdAt, List<OrderItem> items) {
+        var params = new MapSqlParameterSource()
+                .addValue("id", id)
                 .addValue("userId", userId)
                 .addValue("status", status)
-                .addValue("total", totalCents), OrderRepository::map);
+                .addValue("total", totalCents)
+                .addValue("createdAt", createdAt == null ? null : java.sql.Timestamp.from(createdAt));
+        var order = jdbc.queryForObject("""
+                INSERT INTO orders (id, user_id, status, total_cents, created_at)
+                VALUES (COALESCE(:id, nextval('order_id_seq')), :userId, :status, :total, COALESCE(:createdAt, now()))
+                RETURNING""" + " " + COLUMNS, params, OrderRepository::map);
         var batch = items.stream().map(it -> new MapSqlParameterSource()
                 .addValue("orderId", order.id())
                 .addValue("productId", it.productId())
@@ -41,40 +48,57 @@ public class OrderRepository {
         return order.withItems(items);
     }
 
-    public Optional<Order> findById(long id) {
-        return jdbc.query("SELECT id, user_id, status, total_cents, created_at FROM orders WHERE id = :id",
-                new MapSqlParameterSource("id", id), OrderRepository::map).stream().findFirst();
+    public Optional<Order> findById(Shard shard, long id, long userId) {
+        return shard.jdbc().query("SELECT " + COLUMNS + " FROM orders WHERE id = :id AND user_id = :userId",
+                new MapSqlParameterSource().addValue("id", id).addValue("userId", userId),
+                OrderRepository::map).stream().findFirst();
     }
 
-    public List<Order> findByUser(long userId, int limit) {
-        return jdbc.query("""
-                SELECT id, user_id, status, total_cents, created_at FROM orders
+    public List<Order> findByUser(Shard shard, long userId, int limit) {
+        return shard.jdbc().query("SELECT " + COLUMNS + """
+                 FROM orders
                 WHERE user_id = :userId ORDER BY created_at DESC LIMIT :limit
                 """, new MapSqlParameterSource().addValue("userId", userId).addValue("limit", limit),
                 OrderRepository::map);
     }
 
-    public List<OrderItem> findItems(long orderId) {
+    public List<OrderItem> findItems(Shard shard, long orderId) {
+        return findItems(shard.jdbc(), orderId);
+    }
+
+    public List<OrderItem> findItems(NamedParameterJdbcTemplate jdbc, long orderId) {
         return jdbc.query("SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = :id ORDER BY product_id",
                 new MapSqlParameterSource("id", orderId),
                 (rs, i) -> new OrderItem(rs.getLong("product_id"), rs.getInt("quantity"), rs.getLong("price_cents")));
     }
 
-    /** Агрегація по всій таблиці order_items — найдорожчий read-запит системи. */
-    public List<TopProduct> topProducts(int limit) {
-        return jdbc.query("""
-                SELECT p.id, p.name, s.units, s.revenue
-                FROM (SELECT product_id, sum(quantity) AS units, sum(quantity * price_cents) AS revenue
-                      FROM order_items GROUP BY product_id
-                      ORDER BY units DESC, product_id LIMIT :limit) s
-                JOIN products p ON p.id = s.product_id
-                ORDER BY s.units DESC, p.id
-                """, new MapSqlParameterSource("limit", limit),
-                (rs, i) -> new TopProduct(rs.getLong(1), rs.getString(2), rs.getLong(3), rs.getLong(4)));
+    /** Часткова агрегація продажів на одному шарді (фаза scatter для top-products). */
+    public List<ProductSales> salesByProduct(Shard shard) {
+        return shard.jdbc().query("""
+                SELECT product_id, sum(quantity) AS units, sum(quantity * price_cents) AS revenue
+                FROM order_items GROUP BY product_id
+                """, Map.of(), (rs, i) -> new ProductSales(rs.getLong(1), rs.getLong(2), rs.getLong(3)));
     }
 
-    static Order map(ResultSet rs, int rowNum) throws SQLException {
+    /** Агрегати замовлень за період на одному шарді. */
+    public SalesSummary summary(Shard shard, java.time.Instant from, java.time.Instant to) {
+        return shard.jdbc().queryForObject("""
+                SELECT count(*), COALESCE(sum(total_cents), 0), count(DISTINCT user_id)
+                FROM orders WHERE created_at >= :from AND created_at < :to
+                """, new MapSqlParameterSource()
+                .addValue("from", java.sql.Timestamp.from(from))
+                .addValue("to", java.sql.Timestamp.from(to)),
+                (rs, i) -> new SalesSummary(rs.getLong(1), rs.getLong(2), rs.getLong(3)));
+    }
+
+    public static Order map(ResultSet rs, int rowNum) throws SQLException {
         return new Order(rs.getLong("id"), rs.getLong("user_id"), rs.getString("status"),
                 rs.getLong("total_cents"), rs.getTimestamp("created_at").toInstant(), List.of());
+    }
+
+    public record ProductSales(long productId, long units, long revenueCents) {
+    }
+
+    public record SalesSummary(long orders, long revenueCents, long customers) {
     }
 }

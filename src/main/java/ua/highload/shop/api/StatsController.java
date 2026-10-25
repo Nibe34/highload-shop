@@ -31,6 +31,19 @@ public class StatsController {
         return ProductController.withCacheHeader(stats.topProducts(limit));
     }
 
+    /** Cross-shard (fan-out) звіт продажів; ?nocache не потрібен — звіт не кешується. */
+    @GetMapping("/sales")
+    public java.util.Map<String, Object> sales(@RequestParam(defaultValue = "30") @Min(1) @Max(3650) int days) {
+        var to = java.time.Instant.now();
+        return stats.sales(to.minus(java.time.Duration.ofDays(days)), to);
+    }
+
+    /** Обчислення top-products в обхід кешу — для вимірювання вартості Scatter-Gather. */
+    @GetMapping("/top-products/live")
+    public List<TopProduct> topProductsLive(@RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
+        return stats.computeTopProducts(limit);
+    }
+
     @GetMapping("/summary")
     public SummaryResponse summary() {
         return new SummaryResponse(stats.ordersCreated(), instanceId);

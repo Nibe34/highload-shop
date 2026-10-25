@@ -78,6 +78,20 @@ public class ProductRepository {
                 new MapSqlParameterSource().addValue("id", id).addValue("qty", quantity));
     }
 
+    /** Компенсація Saga: повернення зарезервованого залишку. */
+    public void incrementStock(long id, int quantity) {
+        jdbc.update("UPDATE products SET stock = stock + :qty, updated_at = now() WHERE id = :id",
+                new MapSqlParameterSource().addValue("id", id).addValue("qty", quantity));
+    }
+
+    public List<Product> findByIds(Collection<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+        return jdbc.query("SELECT " + COLUMNS + " FROM products WHERE id IN (:ids)",
+                new MapSqlParameterSource("ids", ids), ProductRepository::map);
+    }
+
     public boolean delete(long id) {
         return jdbc.update("DELETE FROM products WHERE id = :id", new MapSqlParameterSource("id", id)) > 0;
     }

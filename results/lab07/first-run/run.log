@@ -1,0 +1,38 @@
+== Hot Shard: стратегія REGION (Kyiv 80 % → shard a)
+{"a->b":4661,"b->a":19979}
+{"strategy":"REGION","bucketsPerShard":{"a":512,"b":512},"shards":{"a":{"orders":39859,"users":1600,"items":119261},"b":{"orders":10141,"users":400,"items":30335}}}
+   hot-region: 893.640386/s rps, db 3439/s
+before: a_1=39859 b_1=10141 
+after:  a_1=61358 b_1=15890 
+== Після оптимізації: стратегія BUCKETS (hash(user_id) mod 1024 → bucket → shard)
+{"a->b":19979,"b->a":4661}
+{"strategy":"BUCKETS","bucketsPerShard":{"a":512,"b":512},"shards":{"a":{"orders":24541,"users":980,"items":73433},"b":{"orders":25459,"users":1020,"items":76163}}}
+   hot-buckets: 722.872865/s rps, db 2755/s
+before: a_1=24541 b_1=25459 
+after:  a_1=34856 b_1=36932 
+== Shard-Local vs Cross-Shard (20 VUs)
+   query-local: 1534.910039/s rps, db 16/s
+   query-fanout: 62.781993/s rps, db 0/s
+   query-sales: 331.816579/s rps, db 0/s
+== Single Node: усі 1024 бакети → shard a (resharding через таблицю бакетів)
+{"b->a":25459}
+a_1=50000 b_1=0 
+   single-B-50: 1664.022256/s rps, db 6462/s
+   single-B-100: 2107.425738/s rps, db 8139/s
+   single-B-200: 1216.839769/s rps, db 4672/s
+   single-C-50: 599.745584/s rps, db 391/s
+   single-C-100: 584.571029/s rps, db 376/s
+   single-C-200: 574.309195/s rps, db 388/s
+   single-query-local: 116.418376/s rps, db 16/s
+   single-query-fanout: 11.427691/s rps, db 0/s
+== Sharded: 512 / 512 бакетів
+{"a->b":25459}
+a_1=24541 b_1=25459 
+   sharded-B-50: 1383.001481/s rps, db 5288/s
+   sharded-B-100: 1207.335653/s rps, db 4626/s
+   sharded-B-200: 1212.436575/s rps, db 4639/s
+   sharded-C-50: 3400.100751/s rps, db 2296/s
+   sharded-C-100: 2126.832609/s rps, db 1409/s
+   sharded-C-200: 1786.251633/s rps, db 1181/s
+done
+exit=0

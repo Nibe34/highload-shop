@@ -4,3 +4,4 @@ target/
 results/raw/
 *.jfr.tmp
 __pycache__/
+profiling/tools/

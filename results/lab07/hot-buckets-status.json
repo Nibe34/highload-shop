@@ -1,0 +1,1 @@
+{"shards":{"a":{"orders":24541,"users":980,"items":73433},"b":{"orders":25459,"users":1020,"items":76163}},"bucketsPerShard":{"a":512,"b":512},"strategy":"BUCKETS"}

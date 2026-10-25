@@ -11,6 +11,10 @@ x-app: &app
       condition: service_healthy
     redis:
       condition: service_healthy
+    postgres-shard-a:
+      condition: service_healthy
+    postgres-shard-b:
+      condition: service_healthy
   networks: [backend]
   # Порти інстансів назовні НЕ публікуються: доступ лише через балансувальник.
 
@@ -21,6 +25,8 @@ x-app-env: &app-env
   REDIS_HOST: redis
   REPLICA_ENABLED: ${REPLICA_ENABLED:-true}
   REPLICA_DB_URL: jdbc:postgresql://postgres-replica:5432/shop
+  SHARDS: ${SHARDS:-a=jdbc:postgresql://postgres-shard-a:5432/shop,b=jdbc:postgresql://postgres-shard-b:5432/shop}
+  SHARD_STRATEGY: ${SHARD_STRATEGY:-BUCKETS}
 
 services:
   postgres:
@@ -75,6 +81,50 @@ services:
       interval: 2s
       timeout: 3s
       retries: 60
+    networks: [backend]
+
+  # Шард замовлень a: незалежний вузол PostgreSQL (ключ шардингу — user_id)
+  postgres-shard-a:
+    image: docker.io/library/postgres:17
+    cpus: 2.0
+    mem_limit: 768m
+    environment:
+      POSTGRES_DB: shop
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: shop
+    command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=128MB",
+              "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.track=all"]
+    volumes:
+      - pgsharda:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop -d shop"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks: [backend]
+
+  # Шард замовлень b: незалежний вузол PostgreSQL (ключ шардингу — user_id)
+  postgres-shard-b:
+    image: docker.io/library/postgres:17
+    cpus: 2.0
+    mem_limit: 768m
+    environment:
+      POSTGRES_DB: shop
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: shop
+    command: ["postgres", "-c", "max_connections=200", "-c", "shared_buffers=128MB",
+              "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.track=all"]
+    volumes:
+      - pgshardb:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop -d shop"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
     networks: [backend]
 
   # Спільне сховище стану: сесії, кошики, лічильники. AOF — щоб стан переживав рестарт Redis.
@@ -149,6 +199,8 @@ services:
 volumes:
   pgdata:
   pgreplica:
+  pgsharda:
+  pgshardb:
   redisdata:
 
 networks:

@@ -32,5 +32,5 @@ step "GET /api/orders/my"
 curl -s "$BASE/api/orders/my" -H "$AUTH"; echo
 step "GET /api/stats/top-products?limit=3"
 curl -s "$BASE/api/stats/top-products?limit=3"; echo
-step "DELETE /api/products/$PID (очікується 409: товар є в замовленні)"
+step "DELETE /api/products/$PID (до ЛР7 — 409 через FK; після шардингу FK між БД немає → 204)"
 curl -s -w ' HTTP %{http_code}' -XDELETE "$BASE/api/products/$PID"; echo

@@ -1,0 +1,1 @@
+{"shards":{"a":{"orders":39859,"users":1600,"items":119261},"b":{"orders":10141,"users":400,"items":30335}},"bucketsPerShard":{"a":512,"b":512},"strategy":"REGION"}
