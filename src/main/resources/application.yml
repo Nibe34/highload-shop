@@ -44,6 +44,14 @@ shop:
   cache:
     enabled: ${CACHE_ENABLED:true}
     breaker-open: 5s
+    # ЛР8: стійкість кешованого шару (перемикаються наживо через Redis hash shop:flags)
+    stampede: ${CACHE_STAMPEDE:LOCK_SINGLE_FLIGHT}
+    ttl-jitter: true
+    negative: true
+    negative-ttl: 30s
+    bloom: true
+    lock-ttl: 5s
+    lock-wait: 3s
     ttl:
       product: 5m
       catalog: 60s

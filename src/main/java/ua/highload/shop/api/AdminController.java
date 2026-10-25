@@ -18,10 +18,21 @@ public class AdminController {
 
     private final JdbcTemplate jdbc;
     private final ReplicaHealth replica;
+    private final org.springframework.data.redis.core.StringRedisTemplate redis;
+    private final ua.highload.shop.cache.FeatureFlags flagsBean;
+    private final ua.highload.shop.cache.ProductBloomFilter bloom;
+    private final String instanceId;
 
-    public AdminController(JdbcTemplate jdbc, ReplicaHealth replica) {
+    public AdminController(JdbcTemplate jdbc, ReplicaHealth replica,
+                           org.springframework.data.redis.core.StringRedisTemplate redis,
+                           ua.highload.shop.cache.FeatureFlags flagsBean, ua.highload.shop.cache.ProductBloomFilter bloom,
+                           @org.springframework.beans.factory.annotation.Value("${shop.instance-id}") String instanceId) {
         this.jdbc = jdbc;
         this.replica = replica;
+        this.redis = redis;
+        this.flagsBean = flagsBean;
+        this.bloom = bloom;
+        this.instanceId = instanceId;
     }
 
     @GetMapping("/replication")
@@ -45,6 +56,27 @@ public class AdminController {
                 "lagSeconds", replica.lagSeconds(), "lastError", String.valueOf(replica.lastError()),
                 "servedBy", String.valueOf(DbRouting.used())));
         return result;
+    }
+
+    /** Динамічні прапорці стійкості кешу (ЛР8): stampede, ttlJitter, negative, bloom, productTtlSeconds. */
+    @org.springframework.web.bind.annotation.PutMapping("/flags")
+    public Map<Object, Object> setFlags(@org.springframework.web.bind.annotation.RequestBody Map<String, String> flags) {
+        redis.opsForHash().putAll(ua.highload.shop.cache.FeatureFlags.KEY, flags);
+        return redis.opsForHash().entries(ua.highload.shop.cache.FeatureFlags.KEY);
+    }
+
+    @GetMapping("/flags")
+    public Map<String, Object> flags() {
+        return Map.of("stampede", flagsBean.stampedeMode(), "ttlJitter", flagsBean.ttlJitter(),
+                "negative", flagsBean.negativeCache(), "bloom", flagsBean.bloom(),
+                "productTtlSeconds", flagsBean.productTtlSeconds(), "instance", instanceId);
+    }
+
+    @org.springframework.web.bind.annotation.PostMapping("/bloom/rebuild")
+    public Map<String, Object> rebuildBloom() {
+        List<Long> ids = DbRouting.replica(() -> jdbc.queryForList("SELECT id FROM products", Long.class));
+        bloom.rebuild(ids);
+        return Map.of("products", ids.size());
     }
 
     private static Object safe(java.util.function.Supplier<List<Map<String, Object>>> query) {

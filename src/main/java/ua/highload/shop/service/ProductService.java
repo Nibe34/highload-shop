@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import ua.highload.shop.cache.CacheClient;
 import ua.highload.shop.cache.CacheKeys;
 import ua.highload.shop.cache.Cached;
+import ua.highload.shop.cache.FeatureFlags;
+import ua.highload.shop.cache.ProductBloomFilter;
 import ua.highload.shop.db.DbNode;
 import ua.highload.shop.db.DbRouting;
 import ua.highload.shop.domain.NotFoundException;
@@ -27,8 +29,12 @@ public class ProductService {
     private final Duration productTtl;
     private final Duration catalogTtl;
     private final Duration fenceTtl;
+    private final FeatureFlags flags;
+    private final ProductBloomFilter bloom;
+    private final io.micrometer.core.instrument.Counter bloomRejected;
 
     public ProductService(ProductRepository products, CacheClient cache, ObjectMapper json,
+                          FeatureFlags flags, ProductBloomFilter bloom, io.micrometer.core.instrument.MeterRegistry meters,
                           @Value("${shop.cache.ttl.product:5m}") Duration productTtl,
                           @Value("${shop.cache.ttl.catalog:60s}") Duration catalogTtl,
                           @Value("${shop.replica.fence-ttl:5s}") Duration fenceTtl) {
@@ -38,6 +44,9 @@ public class ProductService {
         this.productTtl = productTtl;
         this.catalogTtl = catalogTtl;
         this.fenceTtl = fenceTtl;
+        this.flags = flags;
+        this.bloom = bloom;
+        this.bloomRejected = meters.counter("shop.bloom.rejected");
     }
 
     /** Сторінка каталогу: ключ містить версію категорії, тож будь-яка зміна товару категорії інвалідує всі її сторінки. */
@@ -48,10 +57,27 @@ public class ProductService {
                         () -> products.findPage(categoryId, page, size)));
     }
 
+    /**
+     * Картка товару із захистом від Cache Penetration:
+     * Bloom filter відсікає гарантовано неіснуючі id ще до Redis і БД; для решти — negative caching
+     * (маркер «немає» на 30 с), щоб повторні запити того самого неіснуючого id не доходили до БД.
+     */
     public Cached<Product> getCached(long id) {
-        return cache.getOrLoad(CacheKeys.product(id), Product.class, productTtl,
-                () -> DbRouting.on(nodeFor(CacheKeys.productFence(id)),
-                        () -> products.findById(id)).orElseThrow(() -> notFound(id)));
+        if (flags.bloom() && !bloom.mightContain(id)) {
+            bloomRejected.increment();
+            throw notFound(id);
+        }
+        Cached<Product> cached = cache.getOrLoad(CacheKeys.product(id), Product.class, productTtl(),
+                () -> DbRouting.on(nodeFor(CacheKeys.productFence(id)), () -> products.findById(id)).orElse(null));
+        if (cached.value() == null) {
+            throw notFound(id);
+        }
+        return cached;
+    }
+
+    private Duration productTtl() {
+        long override = flags.productTtlSeconds();
+        return override > 0 ? Duration.ofSeconds(override) : productTtl;
     }
 
     public Product get(long id) {
@@ -60,6 +86,9 @@ public class ProductService {
 
     public Product create(long categoryId, String name, String description, long priceCents, int stock) {
         Product created = products.create(categoryId, name, description, priceCents, stock);
+        bloom.add(created.id());
+        // новий id міг бути закешований як «немає» (negative caching) — прибираємо маркер
+        cache.evict(List.of(CacheKeys.product(created.id())));
         invalidateCatalog(categoryId);
         return created;
     }
@@ -69,7 +98,7 @@ public class ProductService {
         Product updated = products.update(id, categoryId, name, description, priceCents, stock)
                 .orElseThrow(() -> notFound(id));
         // write-through: свіже значення з Primary одразу в кеш — інакше MISS перечитав би застарілу Replica
-        cache.put(CacheKeys.product(id), updated, productTtl);
+        cache.put(CacheKeys.product(id), updated, productTtl());
         invalidateCatalog(categoryId);
         if (oldCategory != null && oldCategory != categoryId) {
             invalidateCatalog(oldCategory);

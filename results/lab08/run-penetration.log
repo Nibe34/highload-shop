@@ -1,0 +1,8 @@
+== Cache Penetration: запити до неіснуючих id (50 VUs, 30 с)
+   pen-repeat-none: 1642.508536/s rps, db 0/s
+   pen-repeat-negative: 4538.591138/s rps, db 0/s
+   pen-repeat-bloom: 5682.780726/s rps, db 0/s
+   pen-unique-none: 3605.311191/s rps, db 0/s
+   pen-unique-negative: 3458.188632/s rps, db 0/s
+   pen-unique-bloom: 6435.791444/s rps, db 0/s
+done

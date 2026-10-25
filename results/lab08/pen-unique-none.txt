@@ -1,0 +1,31 @@
+time="2026-10-25T15:44:15+02:00" level=warning msg="The test has generated metrics with 100240 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+time="2026-10-25T15:44:18+02:00" level=warning msg="The test has generated metrics with 202138 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+time="2026-10-25T15:44:25+02:00" level=warning msg="The test has generated metrics with 400453 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+time="2026-10-25T15:44:37+02:00" level=warning msg="The test has generated metrics with 803959 unique time series, which is higher than the suggested limit of 100000 and could cause high memory usage. Consider not using high-cardinality values like unique IDs as metric tags or, if you need them in the URL, use the name metric tag or URL grouping. See https://grafana.com/docs/k6/latest/using-k6/tags-and-groups/ for details." component=metrics-engine-ingester
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 108185  3605.311191/s
+    checks_succeeded...: 100.00% 108185 out of 108185
+    checks_failed......: 0.00%   0 out of 108185
+
+    ✓ expected status
+
+    HTTP
+    http_req_duration....: avg=13.69ms med=4.62ms p(95)=73.35ms p(99)=85.75ms max=176.19ms
+    http_req_failed......: 100.00% 108185 out of 108185
+    http_reqs............: 108185  3605.311191/s
+
+    EXECUTION
+    iteration_duration...: avg=13.85ms med=4.77ms p(95)=73.55ms p(99)=85.98ms max=176.31ms
+    iterations...........: 108185  3605.311191/s
+    vus..................: 50      min=50               max=50
+    vus_max..............: 50      min=50               max=50
+
+    NETWORK
+    data_received........: 38 MB   1.3 MB/s
+    data_sent............: 9.9 MB  331 kB/s
+
+
+

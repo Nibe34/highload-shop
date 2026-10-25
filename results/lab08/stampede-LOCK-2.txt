@@ -1,0 +1,44 @@
+
+
+  █ THRESHOLDS 
+
+    cache_status{status:COALESCED}
+    ✓ 'count>=0' count=410
+
+    cache_status{status:HIT}
+    ✓ 'count>=0' count=89
+
+    cache_status{status:MISS}
+    ✓ 'count>=0' count=1
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 500     3627.585381/s
+    checks_succeeded...: 100.00% 500 out of 500
+    checks_failed......: 0.00%   0 out of 500
+
+    ✓ status 200
+
+    CUSTOM
+    cache_status...................: 500    3627.585381/s
+      { status:COALESCED }.........: 410    2974.620012/s
+      { status:HIT }...............: 89     645.710198/s
+      { status:MISS }..............: 1      7.255171/s
+
+    HTTP
+    http_req_duration..............: avg=64.42ms med=60.86ms p(95)=107.84ms p(99)=113.14ms max=114.38ms
+      { expected_response:true }...: avg=64.42ms med=60.86ms p(95)=107.84ms p(99)=113.14ms max=114.38ms
+    http_req_failed................: 0.00%  0 out of 500
+    http_reqs......................: 500    3627.585381/s
+
+    EXECUTION
+    iteration_duration.............: avg=83.27ms med=86.92ms p(95)=132.27ms p(99)=135.26ms max=136.95ms
+    iterations.....................: 500    3627.585381/s
+
+    NETWORK
+    data_received..................: 491 kB 3.6 MB/s
+    data_sent......................: 51 kB  366 kB/s
+
+
+
