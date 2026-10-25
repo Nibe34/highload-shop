@@ -1,0 +1,9 @@
+# ЛР10: повторний прогін Lab 5 Baseline (код з тегу lab5) в ізольованому compose-проєкті `shopbase`
+# з окремим образом і свіжими томами. Використання — scripts/lab10-compare.sh.
+services:
+  app-1:
+    image: localhost/shop-app:lab5
+  app-2:
+    image: localhost/shop-app:lab5
+  app-3:
+    image: localhost/shop-app:lab5

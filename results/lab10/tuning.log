@@ -1,0 +1,14 @@
+== Tomcat max threads = 200
+   t200-A-100: 4241.786044/s rps, db 0/s
+   t200-C-100: 2523.566046/s rps, db 1721/s
+== Tomcat max threads = 64
+   t64-A-100: 4037.775937/s rps, db 0/s
+   t64-C-100: 3062.620309/s rps, db 2044/s
+== Tomcat max threads = 32
+   t32-A-100: 4400.92417/s rps, db 0/s
+   t32-C-100: 2686.647233/s rps, db 1809/s
+== Tomcat max threads = 16
+   t16-A-100: 4638.7672/s rps, db 1/s
+   t16-C-100: 3438.628159/s rps, db 2321/s
+done
+exit=0

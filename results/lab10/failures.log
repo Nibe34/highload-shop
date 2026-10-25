@@ -1,0 +1,9 @@
+== failure: app
+   fail-app: 3343.69338/s rps, db 2291/s
+== failure: redis
+   fail-redis: 3684.237005/s rps, db 2052/s
+== failure: replica
+   fail-replica: 3022.214731/s rps, db 2237/s
+== failure: shard
+   fail-shard: 3134.871308/s rps, db 2190/s
+done

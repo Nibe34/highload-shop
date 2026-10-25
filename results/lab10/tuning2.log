@@ -1,0 +1,28 @@
+2026/10/25 15:25:37 [notice] 50#50: signal process started
+   t16-round-robin-A-1: 4828.789651/s rps, db 0/s
+   t16-round-robin-C-1: 3117.778623/s rps, db 2090/s
+2026/10/25 15:26:49 [notice] 79#79: signal process started
+   t16-least-conn-A-1: 6600.714088/s rps, db 0/s
+   t16-least-conn-C-1: 4072.07133/s rps, db 2771/s
+2026/10/25 15:28:05 [notice] 108#108: signal process started
+   t16-round-robin-A-2: 5496.593534/s rps, db 0/s
+   t16-round-robin-C-2: 3496.630772/s rps, db 2357/s
+2026/10/25 15:29:19 [notice] 137#137: signal process started
+   t16-least-conn-A-2: 6347.639414/s rps, db 0/s
+   t16-least-conn-C-2: 4424.038025/s rps, db 3017/s
+2026/10/25 15:34:40 [notice] 50#50: signal process started
+   t200-round-robin-A-1: 4013.373532/s rps, db 0/s
+   t200-round-robin-C-1: 2231.22103/s rps, db 1466/s
+2026/10/25 15:35:53 [notice] 79#79: signal process started
+   t200-least-conn-A-1: 4573.938109/s rps, db 0/s
+   t200-least-conn-C-1: 2797.087134/s rps, db 1866/s
+2026/10/25 15:37:06 [notice] 108#108: signal process started
+   t200-round-robin-A-2: 4523.878744/s rps, db 1/s
+   t200-round-robin-C-2: 2362.512178/s rps, db 1615/s
+2026/10/25 15:38:25 [notice] 137#137: signal process started
+   t200-least-conn-A-2: 4817.689367/s rps, db 0/s
+   t200-least-conn-C-2: 2936.710456/s rps, db 1953/s
+2026/10/25 15:39:37 [notice] 166#166: signal process started
+nginx: upstream-round-robin.conf
+done
+exit=0

@@ -3,7 +3,8 @@ server:
   shutdown: graceful
   tomcat:
     threads:
-      max: 200
+      # ЛР10: 16 потоків на інстанс з 1 CPU (див. docs/lab10-final.md, розділ 3)
+      max: ${TOMCAT_MAX_THREADS:16}
 
 spring:
   application:

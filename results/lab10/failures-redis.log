@@ -1,0 +1,3 @@
+== failure: redis
+   fail-redis: 1096.542366/s rps, db 563/s
+done

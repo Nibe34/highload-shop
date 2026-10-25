@@ -28,6 +28,8 @@ x-app-env: &app-env
   # ЛР9: JVM-опції профілювання (JFR) і OpenTelemetry-агент вмикаються змінними середовища
   JAVA_OPTS: ${JAVA_OPTS:--XX:MaxRAMPercentage=75 -XX:+UseG1GC}
   JAVA_TOOL_OPTIONS: ${OTEL_AGENT:-}
+  # ЛР10: пул потоків під 1 CPU — менша конкуренція за CPU (ретроградна ділянка USL при 200 потоках)
+  TOMCAT_MAX_THREADS: ${TOMCAT_MAX_THREADS:-16}
   OTEL_SERVICE_NAME: shop
   OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
   OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
@@ -184,7 +186,7 @@ services:
     cpus: 1.0
     mem_limit: 128m
     environment:
-      LB_ALGO: ${LB_ALGO:-round-robin}
+      LB_ALGO: ${LB_ALGO:-least-conn}
       NGINX_ENTRYPOINT_LOCAL_RESOLVERS: "1"
     volumes:
       - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro,z

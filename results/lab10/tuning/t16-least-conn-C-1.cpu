@@ -1,0 +1,9 @@
+shop_app-1_1 0.91
+shop_app-2_1 0.91
+shop_app-3_1 0.91
+shop_lb_1 0.40
+shop_postgres-replica_1 0.14
+shop_postgres-shard-a_1 0.29
+shop_postgres-shard-b_1 0.32
+shop_postgres_1 0.40
+shop_redis_1 0.35

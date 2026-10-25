@@ -8,7 +8,7 @@ wait_up() { for _ in $(seq 90); do curl -sf localhost:8080/health >/dev/null && 
 warmup() { $K6 -e VUS=50 -e DURATION=${1:-45s} load-tests/lab3/balance.js >/dev/null 2>&1; }
 
 # Сумарний CPU (секунди) контейнерів shop_* з cgroup (podman stats --no-stream показує середнє за весь час життя).
-cpu_snapshot() { for c in $($ENGINE ps --format '{{.Names}}' | grep '^shop_' | sort); do
+cpu_snapshot() { for c in $($ENGINE ps --format '{{.Names}}' | grep -E "^${STACK:-shop}_" | sort); do
   printf '%s %s\n' "$c" "$($ENGINE exec "$c" sh -c 'grep usage_usec /sys/fs/cgroup/cpu.stat' 2>/dev/null | cut -d' ' -f2)"; done; }
 
 cpu_delta() { # before_file after_file seconds
