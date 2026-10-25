@@ -1,0 +1,62 @@
+Converting index-cpu-alloc.jfr -> index-cpu.html # 0.061 s
+Converting index-cpu-alloc.jfr -> index-alloc.html # 0.051 s
+Converting index-wall.jfr -> index-wall.html # 0.055 s
+Converting index-cpu-alloc.jfr -> index-cpu.collapsed # 0.06 s
+Converting index-cpu-alloc.jfr -> index-alloc.collapsed # 0.051 s
+Converting index-wall.jfr -> index-wall.collapsed # 0.118 s
+=== CPU (app-1, itimer): 2116 samples ===
+   46.1%  Tomcat/HTTP I/O
+   16.6%  інше (бізнес-код, Spring, JVM)
+   10.1%  JDBC: очікування відповіді PostgreSQL (socket read)
+    8.6%  Jackson: JSON (де)серіалізація
+    7.1%  JDBC: протокол, маппінг рядків
+    6.4%  Redis (Lettuce): очікування відповіді
+    4.5%  GC / JIT (JVM-потоки)
+    0.5%  HikariCP: очікування з'єднання з пулу
+  top self frames:
+     20.4%  /usr/lib/x86_64-linux-gnu/libc.so.6
+      2.7%  pthread_cond_signal
+      2.1%  itable stub
+      1.8%  ThreadLocal$ThreadLocalMap.getEntry_[i]
+      1.7%  ConcurrentHashMap.get_[i]
+      1.5%  JarFileUrlKey.equals_[i]
+      0.9%  vtable stub
+      0.9%  HashMap.putVal_[i]
+
+=== Wall-clock (app-2, потоки обробки запитів http-nio-exec, без очікування задач): 16336 samples ===
+   53.9%  Redis (Lettuce): очікування відповіді
+   27.7%  JDBC: очікування відповіді PostgreSQL (socket read)
+   12.1%  HikariCP: очікування з'єднання з пулу
+    4.6%  Tomcat/HTTP I/O
+    0.9%  JDBC: протокол, маппінг рядків
+    0.5%  Jackson: JSON (де)серіалізація
+    0.2%  GC / JIT (JVM-потоки)
+    0.1%  інше (бізнес-код, Spring, JVM)
+  top self frames:
+     94.8%  /usr/lib/x86_64-linux-gnu/libc.so.6
+      0.7%  __sched_yield
+      0.2%  syscall
+      0.2%  itable stub
+      0.1%  HashMap.getNode_[i]
+      0.1%  ThreadLocal$ThreadLocalMap.getEntry_[i]
+      0.1%  ConcurrentHashMap.get_[i]
+      0.1%  pthread_cond_signal
+
+=== Allocations (app-1, bytes): 1444937728 bytes ===
+   49.3%  Tomcat/HTTP I/O
+   35.5%  Jackson: JSON (де)серіалізація
+    8.6%  JDBC: протокол, маппінг рядків
+    4.4%  інше (бізнес-код, Spring, JVM)
+    1.7%  JDBC: очікування відповіді PostgreSQL (socket read)
+    0.4%  Redis (Lettuce): очікування відповіді
+    0.2%  HikariCP: очікування з'єднання з пулу
+  top self frames:
+     17.2%  byte[]_[i]
+      6.5%  Object[]_[i]
+      5.4%  HashMap$Node_[i]
+      3.4%  HashMap$Node[]_[i]
+      3.3%  String_[i]
+      3.3%  Long_[i]
+      3.2%  ArrayList_[i]
+      2.2%  HashMap_[i]
+

@@ -1,0 +1,31 @@
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 40685   2009.864477/s
+    checks_succeeded...: 100.00% 40685 out of 40685
+    checks_failed......: 0.00%   0 out of 40685
+
+    ✓ order 201
+
+    CUSTOM
+    responses_by_instance..........: 40685 2009.864477/s
+
+    HTTP
+    http_req_duration..............: avg=47.83ms med=36.92ms p(95)=109.27ms p(99)=160.87ms max=341.19ms
+      { expected_response:true }...: avg=47.83ms med=36.92ms p(95)=109.27ms p(99)=160.87ms max=341.19ms
+    http_req_failed................: 0.00% 0 out of 41685
+    http_reqs......................: 41685 2059.265103/s
+
+    EXECUTION
+    iteration_duration.............: avg=49.21ms med=39.23ms p(95)=110.37ms p(99)=161.84ms max=341.58ms
+    iterations.....................: 40685 2009.864477/s
+    vus............................: 100   min=100        max=100
+    vus_max........................: 100   min=100        max=100
+
+    NETWORK
+    data_received..................: 18 MB 882 kB/s
+    data_sent......................: 11 MB 548 kB/s
+
+
+

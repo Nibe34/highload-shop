@@ -1,0 +1,35 @@
+-- user 42 → shard a
+                                                                 QUERY PLAN                                                                 
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.41..27.34 rows=10 width=40) (actual time=0.052..0.081 rows=10 loops=1)
+   Buffers: shared hit=15
+   ->  Index Scan using idx_orders_user_created on orders  (cost=0.41..536.32 rows=199 width=40) (actual time=0.051..0.080 rows=10 loops=1)
+         Index Cond: (user_id = 42)
+         Buffers: shared hit=15
+ Planning:
+   Buffers: shared hit=114
+ Planning Time: 0.327 ms
+ Execution Time: 0.107 ms
+(9 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using order_items_pkey on order_items  (cost=0.42..11.97 rows=3 width=20) (actual time=0.037..0.038 rows=1 loops=1)
+   Index Cond: (order_id = 21734704)
+   Buffers: shared hit=7
+ Planning:
+   Buffers: shared hit=80
+ Planning Time: 0.210 ms
+ Execution Time: 0.075 ms
+(7 rows)
+
+                                                         List of relations
+ Schema |            Name             | Type  | Owner |         Table         | Persistence | Access method |  Size   | Description 
+--------+-----------------------------+-------+-------+-----------------------+-------------+---------------+---------+-------------
+ public | flyway_schema_history_pk    | index | shop  | flyway_schema_history | permanent   | btree         | 16 kB   | 
+ public | flyway_schema_history_s_idx | index | shop  | flyway_schema_history | permanent   | btree         | 16 kB   | 
+ public | idx_orders_user_created     | index | shop  | orders                | permanent   | btree         | 3496 kB | 
+ public | order_items_pkey            | index | shop  | order_items           | permanent   | btree         | 17 MB   | 
+ public | orders_pkey                 | index | shop  | orders                | permanent   | btree         | 5176 kB | 
+(5 rows)
+

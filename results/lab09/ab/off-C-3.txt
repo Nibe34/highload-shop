@@ -1,0 +1,35 @@
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 81052   2430.742192/s
+    checks_succeeded...: 100.00% 81052 out of 81052
+    checks_failed......: 0.00%   0 out of 81052
+
+    ✓ catalog 200
+    ✓ cart 200
+    ✓ order 201
+    ✓ history 200
+
+    CUSTOM
+    responses_by_instance..........: 101315 3038.427741/s
+    workflow_duration..............: avg=148.3ms  med=120ms    p(95)=298ms    p(99)=648.76ms max=3.24s
+
+    HTTP
+    http_req_duration..............: avg=29.23ms  med=6.78ms   p(95)=111.41ms p(99)=220.47ms max=3.09s
+      { expected_response:true }...: avg=29.23ms  med=6.78ms   p(95)=111.41ms p(99)=220.47ms max=3.09s
+    http_req_failed................: 0.00%  0 out of 102315
+    http_reqs......................: 102315 3068.417651/s
+
+    EXECUTION
+    iteration_duration.............: avg=148.32ms med=120.37ms p(95)=297.57ms p(99)=648.75ms max=3.24s
+    iterations.....................: 20263  607.685548/s
+    vus............................: 1      min=1           max=100
+    vus_max........................: 100    min=100         max=100
+
+    NETWORK
+    data_received..................: 210 MB 6.3 MB/s
+    data_sent......................: 16 MB  488 kB/s
+
+
+

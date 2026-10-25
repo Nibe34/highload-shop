@@ -1,0 +1,22 @@
+   off-C-1: 2789.658107/s rps, db 1902/s
+   off-history-1: 1123.428427/s rps, db 24/s
+   off-B-1: 1780.829366/s rps, db 7076/s
+   on-C-1: 2566.049504/s rps, db 1731/s
+   on-history-1: 2298.425344/s rps, db 24/s
+   on-B-1: 2113.335157/s rps, db 8420/s
+   off-C-2: 3201.487617/s rps, db 2139/s
+   off-history-2: 1117.645807/s rps, db 24/s
+   off-B-2: 2059.265103/s rps, db 7787/s
+   on-C-2: 2651.012412/s rps, db 1724/s
+   on-history-2: 2062.511091/s rps, db 24/s
+   on-B-2: 2083.093936/s rps, db 7885/s
+   off-C-3: 3068.417651/s rps, db 2062/s
+   off-history-3: 1208.119802/s rps, db 25/s
+   off-B-3: 2135.807344/s rps, db 8116/s
+   on-C-3: 2586.7365/s rps, db 1717/s
+   on-history-3: 2230.992265/s rps, db 24/s
+   on-B-3: 2137.872304/s rps, db 8507/s
+NOTICE:  relation "idx_orders_user_created" already exists, skipping
+NOTICE:  relation "idx_orders_user_created" already exists, skipping
+done
+exit=0

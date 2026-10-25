@@ -1,0 +1,1339 @@
+{
+ "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+ "spans": [
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "e302ad0b74979f87",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052753710,
+   "duration": 77,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "b40d5bb5b5f9c911",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052753943,
+   "duration": 128,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "21aa13618c05a02d",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052754255,
+   "duration": 386,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "554635dabd8aae62",
+   "operationName": "GETEX",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052748837,
+   "duration": 337,
+   "tags": [
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "0"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "GETEX"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "GETEX session:ea15b43e-02dc-4798-b398-9d26b9895e9b EX 1800"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "redis"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "network.peer.address",
+     "type": "string",
+     "value": "10.89.0.41"
+    },
+    {
+     "key": "network.peer.port",
+     "type": "int64",
+     "value": 6379
+    },
+    {
+     "key": "network.type",
+     "type": "string",
+     "value": "ipv4"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.lettuce-5.1"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "redis"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 6379
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 54
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "lettuce-nioEventLoop-4-1"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "b24837e063151572",
+   "operationName": "SELECT shop.orders",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052749383,
+   "duration": 2789,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "orders"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT id, user_id, status, total_cents, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT ? "
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "33400c839b5a9b9f",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052752382,
+   "duration": 207,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "00604066090da2e0",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052753142,
+   "duration": 357,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "81553cc93d2bba4d",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052753835,
+   "duration": 82,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "d7fa44809b061d36",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052754795,
+   "duration": 258,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "5a778c5104e4f156",
+   "operationName": "GET /api/orders/my",
+   "references": [],
+   "startTime": 1792937052747959,
+   "duration": 8183,
+   "tags": [
+    {
+     "key": "client.address",
+     "type": "string",
+     "value": "10.89.0.153"
+    },
+    {
+     "key": "http.request.method",
+     "type": "string",
+     "value": "GET"
+    },
+    {
+     "key": "http.response.status_code",
+     "type": "int64",
+     "value": 200
+    },
+    {
+     "key": "http.route",
+     "type": "string",
+     "value": "/api/orders/my"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "network.peer.address",
+     "type": "string",
+     "value": "10.89.0.153"
+    },
+    {
+     "key": "network.peer.port",
+     "type": "int64",
+     "value": 35992
+    },
+    {
+     "key": "network.protocol.version",
+     "type": "string",
+     "value": "1.1"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.tomcat-10.0"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "localhost"
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "server"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    },
+    {
+     "key": "url.path",
+     "type": "string",
+     "value": "/api/orders/my"
+    },
+    {
+     "key": "url.query",
+     "type": "string",
+     "value": "limit=10"
+    },
+    {
+     "key": "url.scheme",
+     "type": "string",
+     "value": "http"
+    },
+    {
+     "key": "user_agent.original",
+     "type": "string",
+     "value": "Grafana k6/2.3.0"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "c712efe6348c2cfa",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052752644,
+   "duration": 190,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "98dbe2502518f651",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052752855,
+   "duration": 141,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  },
+  {
+   "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+   "spanID": "74ed908bb094c066",
+   "operationName": "SELECT shop.order_items",
+   "references": [
+    {
+     "refType": "CHILD_OF",
+     "traceID": "b8928aa4ffaedb72a79a40b3187dbe94",
+     "spanID": "5a778c5104e4f156"
+    }
+   ],
+   "startTime": 1792937052753574,
+   "duration": 107,
+   "tags": [
+    {
+     "key": "db.connection_string",
+     "type": "string",
+     "value": "postgresql://postgres-shard-b:5432"
+    },
+    {
+     "key": "db.name",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "db.operation",
+     "type": "string",
+     "value": "SELECT"
+    },
+    {
+     "key": "db.sql.table",
+     "type": "string",
+     "value": "order_items"
+    },
+    {
+     "key": "db.statement",
+     "type": "string",
+     "value": "SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = ? ORDER BY product_id"
+    },
+    {
+     "key": "db.system",
+     "type": "string",
+     "value": "postgresql"
+    },
+    {
+     "key": "db.user",
+     "type": "string",
+     "value": "shop"
+    },
+    {
+     "key": "internal.span.format",
+     "type": "string",
+     "value": "otlp"
+    },
+    {
+     "key": "otel.scope.name",
+     "type": "string",
+     "value": "io.opentelemetry.jdbc"
+    },
+    {
+     "key": "otel.scope.version",
+     "type": "string",
+     "value": "2.33.0-alpha"
+    },
+    {
+     "key": "server.address",
+     "type": "string",
+     "value": "postgres-shard-b"
+    },
+    {
+     "key": "server.port",
+     "type": "int64",
+     "value": 5432
+    },
+    {
+     "key": "span.kind",
+     "type": "string",
+     "value": "client"
+    },
+    {
+     "key": "thread.id",
+     "type": "int64",
+     "value": 70
+    },
+    {
+     "key": "thread.name",
+     "type": "string",
+     "value": "http-nio-8080-exec-23"
+    }
+   ],
+   "logs": [],
+   "processID": "p1",
+   "warnings": null
+  }
+ ],
+ "processes": {
+  "p1": {
+   "serviceName": "shop",
+   "tags": [
+    {
+     "key": "container.id",
+     "type": "string",
+     "value": "2b543b7f2fa2d4168542c55cff940f29f6dfcfd6628581a8292c59de663fe051"
+    },
+    {
+     "key": "host.arch",
+     "type": "string",
+     "value": "amd64"
+    },
+    {
+     "key": "host.name",
+     "type": "string",
+     "value": "2b543b7f2fa2"
+    },
+    {
+     "key": "os.description",
+     "type": "string",
+     "value": "Linux 7.2.8-200.fc44.x86_64"
+    },
+    {
+     "key": "os.type",
+     "type": "string",
+     "value": "linux"
+    },
+    {
+     "key": "os.version",
+     "type": "string",
+     "value": "7.2.8-200.fc44.x86_64"
+    },
+    {
+     "key": "process.command_args",
+     "type": "string",
+     "value": "[\"/opt/java/openjdk/bin/java\",\"-XX:MaxRAMPercentage=75\",\"-XX:+UseG1GC\",\"-jar\",\"app.jar\"]"
+    },
+    {
+     "key": "process.executable.path",
+     "type": "string",
+     "value": "/opt/java/openjdk/bin/java"
+    },
+    {
+     "key": "process.pid",
+     "type": "int64",
+     "value": 1
+    },
+    {
+     "key": "process.runtime.description",
+     "type": "string",
+     "value": "Eclipse Adoptium OpenJDK 64-Bit Server VM 21.0.12.1+1-LTS"
+    },
+    {
+     "key": "process.runtime.name",
+     "type": "string",
+     "value": "OpenJDK Runtime Environment"
+    },
+    {
+     "key": "process.runtime.version",
+     "type": "string",
+     "value": "21.0.12.1+1-LTS"
+    },
+    {
+     "key": "service.instance.id",
+     "type": "string",
+     "value": "46e4eefe-c803-4fc2-8260-98d19fcf50b1"
+    },
+    {
+     "key": "service.version",
+     "type": "string",
+     "value": "1.0.0"
+    },
+    {
+     "key": "telemetry.distro.name",
+     "type": "string",
+     "value": "opentelemetry-java-instrumentation"
+    },
+    {
+     "key": "telemetry.distro.version",
+     "type": "string",
+     "value": "2.33.0"
+    },
+    {
+     "key": "telemetry.sdk.language",
+     "type": "string",
+     "value": "java"
+    },
+    {
+     "key": "telemetry.sdk.name",
+     "type": "string",
+     "value": "opentelemetry"
+    },
+    {
+     "key": "telemetry.sdk.version",
+     "type": "string",
+     "value": "1.67.0"
+    }
+   ]
+  }
+ },
+ "warnings": null
+}

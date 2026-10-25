@@ -1,0 +1,39 @@
+-- user 42 → shard a
+                                                    QUERY PLAN                                                     
+-------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=888.33..888.35 rows=10 width=40) (actual time=1.469..1.470 rows=10 loops=1)
+   Buffers: shared hit=368
+   ->  Sort  (cost=888.33..888.76 rows=173 width=40) (actual time=1.466..1.466 rows=10 loops=1)
+         Sort Key: created_at DESC
+         Sort Method: top-N heapsort  Memory: 26kB
+         Buffers: shared hit=368
+         ->  Seq Scan on orders  (cost=0.00..884.59 rows=173 width=40) (actual time=0.041..1.426 rows=389 loops=1)
+               Filter: (user_id = 42)
+               Rows Removed by Filter: 41477
+               Buffers: shared hit=365
+ Planning:
+   Buffers: shared hit=89
+ Planning Time: 0.169 ms
+ Execution Time: 1.487 ms
+(14 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using order_items_pkey on order_items  (cost=0.42..11.97 rows=3 width=20) (actual time=0.020..0.021 rows=3 loops=1)
+   Index Cond: (order_id = 2329)
+   Buffers: shared hit=7
+ Planning:
+   Buffers: shared hit=80
+ Planning Time: 0.144 ms
+ Execution Time: 0.046 ms
+(7 rows)
+
+                                                         List of relations
+ Schema |            Name             | Type  | Owner |         Table         | Persistence | Access method |  Size   | Description 
+--------+-----------------------------+-------+-------+-----------------------+-------------+---------------+---------+-------------
+ public | flyway_schema_history_pk    | index | shop  | flyway_schema_history | permanent   | btree         | 16 kB   | 
+ public | flyway_schema_history_s_idx | index | shop  | flyway_schema_history | permanent   | btree         | 16 kB   | 
+ public | order_items_pkey            | index | shop  | order_items           | permanent   | btree         | 17 MB   | 
+ public | orders_pkey                 | index | shop  | orders                | permanent   | btree         | 5176 kB | 
+(4 rows)
+

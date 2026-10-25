@@ -1,0 +1,6 @@
+Trace 22329eeedf86037d10dd1cb3ebebe112: GET /api/products/{id}, total 3.56 ms, spans: 3
+  +   0.00 ms     3.56 ms  [app       ] GET /api/products/{id} 
+  +   0.91 ms     0.41 ms  [redis     ] EVALSHA redis
+  +   1.56 ms     0.78 ms  [redis     ] GET redis
+  Σ за типом: redis: 2 спанів, 1.19 мс (33%)
+saved profiling/traces/baseline-GET_api_products_id.png

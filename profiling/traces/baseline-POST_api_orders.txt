@@ -1,0 +1,15 @@
+Trace 5a7ffc513789ff64bbfdc520c81d696e: POST /api/orders, total 14.18 ms, spans: 12
+  +   0.00 ms    14.18 ms  [app       ] POST /api/orders 
+  +   0.86 ms     0.14 ms  [redis     ] GETEX redis
+  +   1.25 ms     0.33 ms  [redis     ] HGETALL redis
+  +   3.94 ms     0.62 ms  [postgresql] SELECT shop.products postgres
+  +   4.82 ms     0.51 ms  [postgresql] UPDATE shop.products postgres
+  +   8.86 ms     0.27 ms  [redis     ] SET redis
+  +   9.26 ms     0.18 ms  [redis     ] DEL redis
+  +   9.64 ms     0.57 ms  [postgresql] INSERT shop.orders postgres-shard-b
+  +  10.41 ms     0.34 ms  [postgresql] INSERT shop.order_items postgres-shard-b
+  +  13.19 ms     0.35 ms  [redis     ] SET redis
+  +  13.65 ms     0.07 ms  [redis     ] INCR redis
+  +  13.81 ms     0.07 ms  [redis     ] DEL redis
+  Σ за типом: redis: 7 спанів, 1.40 мс (10%), postgresql: 4 спанів, 2.04 мс (14%)
+saved profiling/traces/baseline-POST_api_orders.png

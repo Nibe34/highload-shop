@@ -1,0 +1,16 @@
+Trace b8928aa4ffaedb72a79a40b3187dbe94: GET /api/orders/my, total 8.18 ms, spans: 13
+  +   0.00 ms     8.18 ms  [app       ] GET /api/orders/my 
+  +   0.88 ms     0.34 ms  [redis     ] GETEX redis
+  +   1.42 ms     2.79 ms  [postgresql] SELECT shop.orders postgres-shard-b
+  +   4.42 ms     0.21 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   4.68 ms     0.19 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   4.90 ms     0.14 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   5.18 ms     0.36 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   5.62 ms     0.11 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   5.75 ms     0.08 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   5.88 ms     0.08 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   5.98 ms     0.13 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   6.30 ms     0.39 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  +   6.84 ms     0.26 ms  [postgresql] SELECT shop.order_items postgres-shard-b
+  Σ за типом: redis: 1 спанів, 0.34 мс (4%), postgresql: 11 спанів, 4.72 мс (58%)
+saved profiling/traces/baseline-GET_api_orders_my.png

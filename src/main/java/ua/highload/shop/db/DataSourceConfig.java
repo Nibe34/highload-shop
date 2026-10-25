@@ -28,8 +28,9 @@ public class DataSourceConfig {
     HikariDataSource primaryPool(@Value("${spring.datasource.url}") String url,
                                  @Value("${spring.datasource.username}") String user,
                                  @Value("${spring.datasource.password}") String password,
-                                 @Value("${spring.datasource.hikari.maximum-pool-size:10}") int poolSize) {
-        return pool("primary", url, user, password, poolSize);
+                                 @Value("${spring.datasource.hikari.maximum-pool-size:10}") int poolSize,
+                                 MeterRegistry meters) {
+        return pool("primary", url, user, password, poolSize, meters);
     }
 
     @Bean
@@ -39,8 +40,8 @@ public class DataSourceConfig {
                            @Value("${shop.replica.url:}") String url,
                            @Value("${spring.datasource.username}") String user,
                            @Value("${spring.datasource.password}") String password,
-                           @Value("${shop.replica.pool-size:10}") int poolSize) {
-        return enabled ? pool("replica", url, user, password, poolSize) : primary;
+                           @Value("${shop.replica.pool-size:10}") int poolSize, MeterRegistry meters) {
+        return enabled ? pool("replica", url, user, password, poolSize, meters) : primary;
     }
 
     @Bean
@@ -61,7 +62,8 @@ public class DataSourceConfig {
         return new ReplicaProbe(health, enabled);
     }
 
-    private static HikariDataSource pool(String name, String url, String user, String password, int size) {
+    private static HikariDataSource pool(String name, String url, String user, String password, int size,
+                                         MeterRegistry meters) {
         var cfg = new HikariConfig();
         cfg.setPoolName(name);
         cfg.setJdbcUrl(url);
@@ -72,6 +74,7 @@ public class DataSourceConfig {
         cfg.setValidationTimeout(1000);
         // Без цього пул не стартує, поки вузол недоступний; так застосунок піднімається і при впалій Replica.
         cfg.setInitializationFailTimeout(-1);
+        cfg.setMetricsTrackerFactory(new com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTrackerFactory(meters));
         return new HikariDataSource(cfg);
     }
 

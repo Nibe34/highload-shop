@@ -29,7 +29,8 @@ public class ShardRegistry {
     public ShardRegistry(@Value("${shop.shards.urls}") String urls,
                          @Value("${spring.datasource.username}") String user,
                          @Value("${spring.datasource.password}") String password,
-                         @Value("${shop.shards.pool-size:10}") int poolSize) {
+                         @Value("${shop.shards.pool-size:10}") int poolSize,
+                         io.micrometer.core.instrument.MeterRegistry meters) {
         int index = 0;
         for (String entry : urls.split(",")) {
             String[] kv = entry.trim().split("=", 2);
@@ -40,6 +41,8 @@ public class ShardRegistry {
             cfg.setPassword(password);
             cfg.setMaximumPoolSize(poolSize);
             cfg.setConnectionTimeout(1500);
+            // метрики пулу (hikaricp.connections.active/pending/usage) — для діагностики Connection Pool Exhaustion
+            cfg.setMetricsTrackerFactory(new com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTrackerFactory(meters));
             var ds = new HikariDataSource(cfg);
             pools.add(ds);
             Flyway.configure().dataSource(ds).locations("classpath:db/shard")

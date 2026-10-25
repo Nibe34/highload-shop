@@ -1,0 +1,39 @@
+
+
+  █ THRESHOLDS 
+
+    http_req_duration{shard:a}
+    ✓ 'max>=0' max=395.53ms
+
+    http_req_duration{shard:b}
+    ✓ 'max>=0' max=419.32ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 36997   1796.399699/s
+    checks_succeeded...: 100.00% 36997 out of 36997
+    checks_failed......: 0.00%   0 out of 36997
+
+    ✓ status 200
+
+    HTTP
+    http_req_duration..............: avg=26.26ms med=5.29ms p(95)=110.75ms p(99)=189.38ms max=419.32ms
+      { expected_response:true }...: avg=26.26ms med=5.29ms p(95)=110.75ms p(99)=189.38ms max=419.32ms
+      { shard:a }..................: avg=27.37ms med=5.5ms  p(95)=114.54ms p(99)=189.84ms max=395.53ms
+      { shard:b }..................: avg=26.54ms med=5.46ms p(95)=113.6ms  p(99)=189.38ms max=419.32ms
+    http_req_failed................: 0.00%  0 out of 37997
+    http_reqs......................: 37997  1844.954979/s
+
+    EXECUTION
+    iteration_duration.............: avg=27.11ms med=5.67ms p(95)=114.43ms p(99)=189.85ms max=419.5ms 
+    iterations.....................: 36997  1796.399699/s
+    vus............................: 50     min=50         max=50
+    vus_max........................: 50     min=50         max=50
+
+    NETWORK
+    data_received..................: 106 MB 5.1 MB/s
+    data_sent......................: 7.0 MB 338 kB/s
+
+
+

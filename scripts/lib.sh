@@ -31,3 +31,12 @@ measure() { local name=$1 script=$2; shift 2
   cpu_snapshot > "$OUT/.cpu1"; cpu_delta "$OUT/.cpu0" "$OUT/.cpu1" $(( t1 - t0 )) > "$OUT/$name.cpu"
   echo "db_calls $(( q1 - q0 )) per_sec $(( (q1 - q0) / (t1 - t0) ))" > "$OUT/$name.db"
   rm -f "$OUT/.cpu0" "$OUT/.cpu1"; echo "   $name: $(grep -E 'http_reqs\.' "$OUT/$name.txt" | awk '{print $3}') rps, db $(( (q1 - q0) / (t1 - t0) ))/s"; }
+
+# Прогрів УСІХ кодових шляхів (читання, запис, workflow, історія): при 1 CPU на інстанс C2 компілює
+# кожен шлях окремо, і непрогрітий шлях на одному інстансі гальмує весь пул при Round Robin.
+warmup_all() {
+  $K6 -e VUS=50 -e DURATION=60s load-tests/lab3/balance.js >/dev/null 2>&1
+  $K6 -e SCENARIO=B -e VUS=50 -e DURATION=45s load-tests/scenarios.js >/dev/null 2>&1
+  $K6 -e SCENARIO=C -e VUS=50 -e DURATION=60s load-tests/scenarios.js >/dev/null 2>&1
+  $K6 -e MODE=local -e VUS=20 -e DURATION=30s -e USERS=200 load-tests/lab7/queries.js >/dev/null 2>&1
+}

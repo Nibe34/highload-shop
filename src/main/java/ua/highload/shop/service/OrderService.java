@@ -47,10 +47,12 @@ public class OrderService {
     private final ShardRouter router;
     private final TransactionTemplate catalogTx;
     private final Duration fenceTtl;
+    private final ua.highload.shop.cache.FeatureFlags flags;
 
     public OrderService(OrderRepository orders, ProductRepository products, StatsService stats,
                         ProductService productService, CacheClient cache, ShardRouter router,
-                        TransactionTemplate catalogTx, @Value("${shop.replica.fence-ttl:5s}") Duration fenceTtl) {
+                        TransactionTemplate catalogTx, @Value("${shop.replica.fence-ttl:5s}") Duration fenceTtl,
+                        ua.highload.shop.cache.FeatureFlags flags) {
         this.orders = orders;
         this.products = products;
         this.stats = stats;
@@ -59,6 +61,7 @@ public class OrderService {
         this.router = router;
         this.catalogTx = catalogTx;
         this.fenceTtl = fenceTtl;
+        this.flags = flags;
     }
 
     public Order checkout(long userId, Map<Long, Integer> requested) {
@@ -120,11 +123,18 @@ public class OrderService {
         return order.withItems(orders.findItems(shard, id));
     }
 
-    /** Історія замовлень — shard-local (усі замовлення користувача на одному шарді). */
+    /**
+     * Історія замовлень — shard-local (усі замовлення користувача на одному шарді).
+     * Рівно 2 запити незалежно від кількості замовлень: замовлення (Index Scan по user_id, created_at) + усі їхні позиції.
+     */
     public List<Order> byUser(long userId, int limit) {
         Shard shard = router.forUser(userId);
-        return orders.findByUser(shard, userId, limit).stream()
-                .map(o -> o.withItems(orders.findItems(shard, o.id())))
-                .toList();
+        List<Order> page = orders.findByUser(shard, userId, limit);
+        if (!flags.historyBatch()) {
+            // попередня реалізація (N+1) — лишена за прапорцем для контрольованого A/B-експерименту
+            return page.stream().map(o -> o.withItems(orders.findItems(shard, o.id()))).toList();
+        }
+        Map<Long, List<OrderItem>> items = orders.findItems(shard, page.stream().map(Order::id).toList());
+        return page.stream().map(o -> o.withItems(items.getOrDefault(o.id(), List.of()))).toList();
     }
 }

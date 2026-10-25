@@ -69,7 +69,8 @@ public class AdminController {
     public Map<String, Object> flags() {
         return Map.of("stampede", flagsBean.stampedeMode(), "ttlJitter", flagsBean.ttlJitter(),
                 "negative", flagsBean.negativeCache(), "bloom", flagsBean.bloom(),
-                "productTtlSeconds", flagsBean.productTtlSeconds(), "instance", instanceId);
+                "productTtlSeconds", flagsBean.productTtlSeconds(), "historyBatch", flagsBean.historyBatch(),
+                "instance", instanceId);
     }
 
     @org.springframework.web.bind.annotation.PostMapping("/bloom/rebuild")

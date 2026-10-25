@@ -32,6 +32,7 @@ public class FeatureFlags {
     private volatile boolean negativeCache;
     private volatile boolean bloom;
     private volatile long productTtlSeconds;
+    private volatile boolean historyBatch;
 
     public FeatureFlags(StringRedisTemplate redis,
                         @Value("${shop.cache.stampede:LOCK_SINGLE_FLIGHT}") StampedeMode defaultMode,
@@ -66,6 +67,7 @@ public class FeatureFlags {
         negativeCache = bool(raw.get("negative"), defaultNegative);
         bloom = bool(raw.get("bloom"), defaultBloom);
         productTtlSeconds = raw.get("productTtlSeconds") == null ? 0 : Long.parseLong(raw.get("productTtlSeconds").toString());
+        historyBatch = bool(raw.get("historyBatch"), true);
     }
 
     private static StampedeMode parse(Object v, StampedeMode def) {
@@ -94,6 +96,11 @@ public class FeatureFlags {
 
     public boolean bloom() {
         return bloom;
+    }
+
+    /** ЛР9: історія замовлень — позиції одним batch-запитом (true) або N+1 (false, для A/B-порівняння). */
+    public boolean historyBatch() {
+        return historyBatch;
     }
 
     /** Перевизначення TTL карток товарів (для експерименту з Cache Avalanche); 0 — значення з конфігурації. */

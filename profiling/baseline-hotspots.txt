@@ -1,0 +1,56 @@
+=== CPU (app-1, itimer): 2126 samples ===
+   43.7%  Tomcat/HTTP I/O
+   15.1%  інше (бізнес-код, Spring, JVM)
+    8.7%  JDBC: очікування відповіді PostgreSQL (socket read)
+    8.2%  Jackson: JSON (де)серіалізація
+    8.1%  JDBC: протокол, маппінг рядків
+    7.9%  GC / JIT (JVM-потоки)
+    7.5%  Redis (Lettuce): очікування відповіді
+    0.8%  HikariCP: очікування з'єднання з пулу
+  top self frames:
+     19.4%  /usr/lib/x86_64-linux-gnu/libc.so.6
+      2.5%  pthread_cond_signal
+      2.3%  HashMap.getNode_[i]
+      1.7%  itable stub
+      1.4%  ThreadLocal$ThreadLocalMap.getEntry_[i]
+      1.2%  ConcurrentHashMap.get_[i]
+      0.8%  AbstractQueuedSynchronizer.signalNext_[i]
+      0.8%  HashMap.putVal_[i]
+
+=== Wall-clock (app-2, потоки обробки запитів http-nio-exec, без очікування задач): 12555 samples ===
+   47.4%  Redis (Lettuce): очікування відповіді
+   36.7%  JDBC: очікування відповіді PostgreSQL (socket read)
+    7.7%  HikariCP: очікування з'єднання з пулу
+    6.4%  Tomcat/HTTP I/O
+    0.8%  JDBC: протокол, маппінг рядків
+    0.7%  Jackson: JSON (де)серіалізація
+    0.4%  GC / JIT (JVM-потоки)
+    0.0%  інше (бізнес-код, Spring, JVM)
+  top self frames:
+     93.0%  /usr/lib/x86_64-linux-gnu/libc.so.6
+      2.3%  syscall
+      0.6%  __sched_yield
+      0.2%  HashMap.getNode_[i]
+      0.1%  itable stub
+      0.1%  ConcurrentHashMap.get_[i]
+      0.1%  pthread_cond_signal
+      0.0%  HashMap.putVal_[i]
+
+=== Allocations (app-1, bytes): 1727004672 bytes ===
+   47.6%  Tomcat/HTTP I/O
+   36.7%  Jackson: JSON (де)серіалізація
+    9.4%  JDBC: протокол, маппінг рядків
+    4.3%  інше (бізнес-код, Spring, JVM)
+    1.6%  JDBC: очікування відповіді PostgreSQL (socket read)
+    0.2%  HikariCP: очікування з'єднання з пулу
+    0.2%  Redis (Lettuce): очікування відповіді
+  top self frames:
+     17.5%  byte[]_[i]
+      6.9%  Object[]_[i]
+      5.3%  HashMap$Node_[i]
+      3.7%  HashMap$Node[]_[i]
+      3.3%  String_[i]
+      2.9%  Long_[i]
+      2.6%  ArrayList_[i]
+      2.4%  HashMap_[i]
+

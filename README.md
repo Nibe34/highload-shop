@@ -26,5 +26,6 @@ scripts/smoke.sh                  # демонстрація всіх основ
 | 6 | Database Replication, Read/Write Separation | [docs/lab06-replication.md](docs/lab06-replication.md) |
 | 7 | Sharding, Partitioning, Consistent Hashing | [docs/lab07-sharding.md](docs/lab07-sharding.md) |
 | 8 | Resilience: Stampede, Avalanche, Penetration | [docs/lab08-resilience.md](docs/lab08-resilience.md) |
+| 9 | Performance Profiling, Bottleneck Diagnostics | [docs/lab09-profiling.md](docs/lab09-profiling.md) |
 
 Стан коду після кожної ЛР позначено git-тегом `labN` (`git checkout lab1`).

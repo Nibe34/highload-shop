@@ -5,3 +5,5 @@ results/raw/
 *.jfr.tmp
 __pycache__/
 profiling/tools/
+profiling/*.collapsed
+profiling/*.jfr

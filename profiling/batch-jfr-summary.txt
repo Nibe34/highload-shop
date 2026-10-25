@@ -1,0 +1,12 @@
+GC: 89 збирань за 90 с (0.99/с), типи: {'G1New': 67, 'G1Old': 22}
+  паузи: median 7.71 мс, p95 44.82 мс, max 59.45 мс, сумарно 1082 мс (1.20 % часу)
+  heap після GC: min 43 MB, max 76 MB; середнє 1-ї третини 47 MB → останньої 48 MB (тренд стабільний — ознак витоку немає)
+Allocation rate (оцінка JFR ObjectAllocationSample): 93 MB/с
+   15.8%  [B
+    9.6%  [Ljava/lang/Object;
+    4.1%  java/util/concurrent/ConcurrentHashMap$Node
+    3.8%  org/springframework/web/util/pattern/PathPattern$MatchingContext
+    3.5%  java/util/ArrayList
+    3.1%  java/lang/String
+    2.8%  jdk/internal/loader/AbstractClassLoaderValue$Sub
+    2.3%  java/util/GregorianCalendar

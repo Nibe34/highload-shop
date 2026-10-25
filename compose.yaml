@@ -16,6 +16,8 @@ x-app: &app
     postgres-shard-b:
       condition: service_healthy
   networks: [backend]
+  volumes:
+    - ./profiling/tools:/profiling-tools:ro,z
   # Порти інстансів назовні НЕ публікуються: доступ лише через балансувальник.
 
 x-app-env: &app-env
@@ -23,6 +25,14 @@ x-app-env: &app-env
   DB_USER: shop
   DB_PASSWORD: shop
   REDIS_HOST: redis
+  # ЛР9: JVM-опції профілювання (JFR) і OpenTelemetry-агент вмикаються змінними середовища
+  JAVA_OPTS: ${JAVA_OPTS:--XX:MaxRAMPercentage=75 -XX:+UseG1GC}
+  JAVA_TOOL_OPTIONS: ${OTEL_AGENT:-}
+  OTEL_SERVICE_NAME: shop
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+  OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+  OTEL_METRICS_EXPORTER: none
+  OTEL_LOGS_EXPORTER: none
   REPLICA_ENABLED: ${REPLICA_ENABLED:-true}
   REPLICA_DB_URL: jdbc:postgresql://postgres-replica:5432/shop
   SHARDS: ${SHARDS:-a=jdbc:postgresql://postgres-shard-a:5432/shop,b=jdbc:postgresql://postgres-shard-b:5432/shop}
@@ -182,6 +192,17 @@ services:
     ports:
       - "8080:80"
     depends_on: [app-1, app-2, app-3]
+    networks: [backend]
+
+  # ЛР9: розподілене трасування (OTLP → Jaeger UI :16686). podman-compose --profile tracing up -d jaeger
+  jaeger:
+    image: docker.io/jaegertracing/all-in-one:1.62.0
+    profiles: [tracing]
+    cpus: 1.0
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
     networks: [backend]
 
   # Альтернативний LB з активними health check'ами: podman-compose --profile haproxy up -d haproxy

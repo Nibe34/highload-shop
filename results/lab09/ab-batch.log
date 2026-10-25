@@ -1,0 +1,13 @@
+   nplus1-history-1: 1844.954979/s rps, db 24/s
+   nplus1-C30-1: 2164.542077/s rps, db 1429/s
+   batch-history-1: 3664.415865/s rps, db 24/s
+   batch-C30-1: 2640.106347/s rps, db 1817/s
+   nplus1-history-2: 2312.228368/s rps, db 24/s
+   nplus1-C30-2: 2465.394035/s rps, db 1641/s
+   batch-history-2: 3642.939095/s rps, db 24/s
+   batch-C30-2: 2689.055934/s rps, db 1852/s
+   nplus1-history-3: 2022.286003/s rps, db 24/s
+   nplus1-C30-3: 2433.693496/s rps, db 1617/s
+   batch-history-3: 3857.135449/s rps, db 24/s
+   batch-C30-3: 2671.277232/s rps, db 1777/s
+done

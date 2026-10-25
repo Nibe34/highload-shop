@@ -1,0 +1,22 @@
+### shop_postgres-shard-a_1
+ calls  | total_ms | mean_ms |  rows  | pct  |                                                     query                                                      
+--------+----------+---------+--------+------+----------------------------------------------------------------------------------------------------------------
+ 113630 |     1840 |   0.016 | 117837 | 41.0 | SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = $1 ORDER BY product_id
+  11363 |     1147 |   0.101 |  11363 | 25.5 | INSERT INTO order_items (order_id, product_id, quantity, price_cents) VALUES ($1, $2, $3, $4)
+  11363 |      661 |   0.058 |  11363 | 14.7 | INSERT INTO orders (id, user_id, status, total_cents, created_at) VALUES (COALESCE($1, nextval($6)), $2, $3, $
+  11363 |      619 |   0.054 | 113630 | 13.8 | SELECT id, user_id, status, total_cents, created_at FROM orders WHERE user_id = $1 ORDER BY created_at DESC LI
+  11363 |      214 |   0.019 |  11363 |  4.8 | SELECT $2 FROM ONLY "public"."orders" x WHERE "id" OPERATOR(pg_catalog.=) $1 FOR KEY SHARE OF x
+  11363 |       12 |   0.001 |      0 |  0.3 | BEGIN
+(6 rows)
+
+### shop_postgres-shard-b_1
+ calls  | total_ms | mean_ms |  rows  | pct  |                                                     query                                                      
+--------+----------+---------+--------+------+----------------------------------------------------------------------------------------------------------------
+ 129530 |     2086 |   0.016 | 134274 | 41.1 | SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = $1 ORDER BY product_id
+  12953 |     1281 |   0.099 |  12953 | 25.3 | INSERT INTO order_items (order_id, product_id, quantity, price_cents) VALUES ($1, $2, $3, $4)
+  12953 |      771 |   0.060 |  12953 | 15.2 | INSERT INTO orders (id, user_id, status, total_cents, created_at) VALUES (COALESCE($1, nextval($6)), $2, $3, $
+  12953 |      682 |   0.053 | 129530 | 13.4 | SELECT id, user_id, status, total_cents, created_at FROM orders WHERE user_id = $1 ORDER BY created_at DESC LI
+  12953 |      237 |   0.018 |  12953 |  4.7 | SELECT $2 FROM ONLY "public"."orders" x WHERE "id" OPERATOR(pg_catalog.=) $1 FOR KEY SHARE OF x
+  12953 |       13 |   0.001 |      0 |  0.3 | BEGIN
+(6 rows)
+

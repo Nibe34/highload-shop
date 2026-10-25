@@ -66,6 +66,25 @@ public class OrderRepository {
         return findItems(shard.jdbc(), orderId);
     }
 
+    /**
+     * Позиції для кількох замовлень одним запитом ({@code order_id = ANY(?)}) замість N окремих (усунення N+1).
+     * Порядок позицій у межах замовлення — за product_id, як і в {@link #findItems(Shard, long)}.
+     */
+    public Map<Long, List<OrderItem>> findItems(Shard shard, List<Long> orderIds) {
+        Map<Long, List<OrderItem>> result = new java.util.HashMap<>();
+        if (orderIds.isEmpty()) {
+            return result;
+        }
+        shard.jdbc().query("""
+                SELECT order_id, product_id, quantity, price_cents FROM order_items
+                WHERE order_id = ANY(:ids) ORDER BY order_id, product_id
+                """, new MapSqlParameterSource("ids", orderIds.toArray(Long[]::new)), rs -> {
+            result.computeIfAbsent(rs.getLong(1), k -> new java.util.ArrayList<>())
+                    .add(new OrderItem(rs.getLong(2), rs.getInt(3), rs.getLong(4)));
+        });
+        return result;
+    }
+
     public List<OrderItem> findItems(NamedParameterJdbcTemplate jdbc, long orderId) {
         return jdbc.query("SELECT product_id, quantity, price_cents FROM order_items WHERE order_id = :id ORDER BY product_id",
                 new MapSqlParameterSource("id", orderId),

@@ -1,0 +1,7 @@
+Trace 0d6affb9d42c8feb1edfbc62fe2a8349: GET /api/orders/my, total 2.22 ms, spans: 4
+  +   0.00 ms     2.22 ms  [app       ] GET /api/orders/my 
+  +   0.59 ms     0.11 ms  [redis     ] GETEX redis
+  +   0.81 ms     0.48 ms  [postgresql] SELECT shop.orders postgres-shard-a
+  +   1.43 ms     0.29 ms  [postgresql] SELECT shop.order_items postgres-shard-a
+  Σ за типом: redis: 1 спанів, 0.11 мс (5%), postgresql: 2 спанів, 0.77 мс (35%)
+saved profiling/traces/optimized-GET_api_orders_my.png
